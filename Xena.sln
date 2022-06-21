@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena", "src\Xena\Xena.csproj", "{380235CF-4D94-4562-AB1B-39C8A914AE4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena.Sample", "samples\Xena.Sample\Xena.Sample.csproj", "{5C6CD93A-9821-499F-8F05-AD5B1B1BE256}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{ACAB26BA-3664-48CE-900A-D72CE262DC2A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena.Discovery.Consul", "src\Xena.Discovery.Consul\Xena.Discovery.Consul.csproj", "{10196FDA-2F60-45CA-8D2B-DC62197933D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena.Tests", "tests\Xena.Tests\Xena.Tests.csproj", "{B9C7898D-1156-4F3A-A6C4-79834C4E113A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9500C5D2-39CB-4714-AE5B-85D72C2E8A64}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{380235CF-4D94-4562-AB1B-39C8A914AE4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{380235CF-4D94-4562-AB1B-39C8A914AE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{380235CF-4D94-4562-AB1B-39C8A914AE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{380235CF-4D94-4562-AB1B-39C8A914AE4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C6CD93A-9821-499F-8F05-AD5B1B1BE256}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C6CD93A-9821-499F-8F05-AD5B1B1BE256}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C6CD93A-9821-499F-8F05-AD5B1B1BE256}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C6CD93A-9821-499F-8F05-AD5B1B1BE256}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10196FDA-2F60-45CA-8D2B-DC62197933D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10196FDA-2F60-45CA-8D2B-DC62197933D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10196FDA-2F60-45CA-8D2B-DC62197933D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10196FDA-2F60-45CA-8D2B-DC62197933D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C7898D-1156-4F3A-A6C4-79834C4E113A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C7898D-1156-4F3A-A6C4-79834C4E113A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C7898D-1156-4F3A-A6C4-79834C4E113A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C7898D-1156-4F3A-A6C4-79834C4E113A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{10196FDA-2F60-45CA-8D2B-DC62197933D7} = {ACAB26BA-3664-48CE-900A-D72CE262DC2A}
+		{B9C7898D-1156-4F3A-A6C4-79834C4E113A} = {9500C5D2-39CB-4714-AE5B-85D72C2E8A64}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9A5683F-88A5-41D9-B6D9-22EC01561FCB}
+	EndGlobalSection
+EndGlobal
