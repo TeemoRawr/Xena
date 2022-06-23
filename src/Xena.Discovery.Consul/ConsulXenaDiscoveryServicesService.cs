@@ -9,7 +9,7 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Consul;
 
-internal class ConsulDiscoveryServicesService : IInitializeDiscoveryServicesService, IDiscoveryServicesService, IDisposable
+internal class ConsulXenaDiscoveryServicesService : IXenaInitializeDiscoveryServicesService, IXenaDiscoveryServicesService, IDisposable
 {
     private IConsulClient? _consulClient;
     private readonly IServer _serverAddressesFeature;
@@ -18,7 +18,7 @@ internal class ConsulDiscoveryServicesService : IInitializeDiscoveryServicesServ
 
     public bool Initialized { get; private set; }
 
-    public ConsulDiscoveryServicesService(IServer serverAddressesFeature, IOptions<ConsulDiscoveryServicesConfiguration> consulOptions)
+    public ConsulXenaDiscoveryServicesService(IServer serverAddressesFeature, IOptions<ConsulDiscoveryServicesConfiguration> consulOptions)
     {
         _serverAddressesFeature = serverAddressesFeature;
         _consulOptions = consulOptions;

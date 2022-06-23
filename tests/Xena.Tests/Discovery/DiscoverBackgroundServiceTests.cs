@@ -6,8 +6,8 @@ namespace Xena.Tests.Discovery;
 
 public class DiscoverBackgroundServiceTests
 {
-    private Mock<IInitializeDiscoveryServicesService> _initializeDiscoveryServicesServiceMock = null!;
-    private Mock<IDiscoveryServicesService> _discoveryServicesServiceMock = null!;
+    private Mock<IXenaInitializeDiscoveryServicesService> _initializeDiscoveryServicesServiceMock = null!;
+    private Mock<IXenaDiscoveryServicesService> _discoveryServicesServiceMock = null!;
 
     [Fact]
     public async Task ExecuteAsync_ShouldInvokeInitialize()
@@ -59,8 +59,8 @@ public class DiscoverBackgroundServiceTests
 
     private DiscoverBackgroundService CreateSut()
     {
-        _initializeDiscoveryServicesServiceMock = new Mock<IInitializeDiscoveryServicesService>();
-        _discoveryServicesServiceMock = new Mock<IDiscoveryServicesService>();
+        _initializeDiscoveryServicesServiceMock = new Mock<IXenaInitializeDiscoveryServicesService>();
+        _discoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesService>();
 
         return new DiscoverBackgroundService(
             _initializeDiscoveryServicesServiceMock.Object,

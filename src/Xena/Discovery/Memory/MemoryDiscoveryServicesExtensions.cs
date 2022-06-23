@@ -6,14 +6,14 @@ namespace Xena.Discovery.Memory;
 
 public static class MemoryDiscoveryServicesExtensions
 {
-    public static IDiscoveryServicesConfigurator AddMemoryDiscover(this IDiscoveryServicesConfigurator discoveryServicesConfigurator, IEnumerable<Service> services)
+    public static IXenaDiscoveryServicesConfigurator AddMemoryDiscover(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator, IEnumerable<Service> services)
     {
-        var memoryDiscoveryServicesService = new MemoryDiscoveryServicesService(services);
+        var memoryDiscoveryServicesService = new MemoryXenaDiscoveryServicesService(services);
 
-        discoveryServicesConfigurator.ServiceCollection.AddSingleton(_ => memoryDiscoveryServicesService);
-        discoveryServicesConfigurator.ServiceCollection.AddSingleton<IInitializeDiscoveryServicesService>(p => p.GetRequiredService<MemoryDiscoveryServicesService>());
-        discoveryServicesConfigurator.ServiceCollection.AddSingleton<IDiscoveryServicesService>(p => p.GetRequiredService<MemoryDiscoveryServicesService>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton(_ => memoryDiscoveryServicesService);
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaInitializeDiscoveryServicesService>(p => p.GetRequiredService<MemoryXenaDiscoveryServicesService>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<MemoryXenaDiscoveryServicesService>());
 
-        return discoveryServicesConfigurator;
+        return xenaDiscoveryServicesConfigurator;
     }
 }

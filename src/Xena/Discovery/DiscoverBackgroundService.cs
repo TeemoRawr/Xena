@@ -1,41 +1,48 @@
-﻿using Xena.Discovery.Interfaces;
+﻿using Microsoft.Extensions.Options;
+using Xena.Discovery.Interfaces;
+using Xena.Discovery.Models;
 
 namespace Xena.Discovery;
 
 internal class DiscoverBackgroundService : BackgroundService
 {
-    private readonly IInitializeDiscoveryServicesService _initializeDiscoveryServicesService;
-    private readonly IDiscoveryServicesService _discoveryServicesService;
+    private readonly IXenaInitializeDiscoveryServicesService _xenaInitializeDiscoveryServicesService;
+    private readonly IXenaDiscoveryServicesService _xenaDiscoveryServicesService;
+    private readonly IOptions<XenaDiscoveryOptions> _xenaDiscoveryOptions;
 
     public DiscoverBackgroundService(
-        IInitializeDiscoveryServicesService initializeDiscoveryServicesService, 
-        IDiscoveryServicesService discoveryServicesService)
+        IXenaInitializeDiscoveryServicesService xenaInitializeDiscoveryServicesService, 
+        IXenaDiscoveryServicesService xenaDiscoveryServicesService,
+        IOptions<XenaDiscoveryOptions> xenaDiscoveryOptions)
     {
-        _initializeDiscoveryServicesService = initializeDiscoveryServicesService;
-        _discoveryServicesService = discoveryServicesService;
+        _xenaInitializeDiscoveryServicesService = xenaInitializeDiscoveryServicesService;
+        _xenaDiscoveryServicesService = xenaDiscoveryServicesService;
+        _xenaDiscoveryOptions = xenaDiscoveryOptions;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         try 
         {
-            await _initializeDiscoveryServicesService.InitializeAsync(stoppingToken);
+            await _xenaInitializeDiscoveryServicesService.InitializeAsync(stoppingToken);
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                var xenaDiscoveryOptions = _xenaDiscoveryOptions.Value;
+
                 try
                 {
-                    await _discoveryServicesService.RefreshServicesAsync(stoppingToken);
+                    await _xenaDiscoveryServicesService.RefreshServicesAsync(stoppingToken);
                 }
                 finally
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+                    await Task.Delay(xenaDiscoveryOptions.RefreshServicesTimeThreshold, stoppingToken);
                 }
             }
         }
         finally
         {
-            await _initializeDiscoveryServicesService.DeactivateAsync();
+            await _xenaInitializeDiscoveryServicesService.DeactivateAsync();
         }
     }
 }

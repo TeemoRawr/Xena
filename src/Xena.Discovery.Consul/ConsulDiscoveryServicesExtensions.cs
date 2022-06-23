@@ -7,16 +7,16 @@ namespace Xena.Discovery.Consul;
 
 public static class ConsulDiscoveryServicesExtensions
 {
-    public static IDiscoveryServicesConfigurator AddConsulDiscover(this IDiscoveryServicesConfigurator discoveryServicesConfigurator)
+    public static IXenaDiscoveryServicesConfigurator AddConsulDiscover(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator)
     {
-        discoveryServicesConfigurator.ServiceCollection.AddSingleton<ConsulDiscoveryServicesService>();
-        discoveryServicesConfigurator.ServiceCollection.AddSingleton<IInitializeDiscoveryServicesService>(p => p.GetRequiredService<ConsulDiscoveryServicesService>());
-        discoveryServicesConfigurator.ServiceCollection.AddSingleton<IDiscoveryServicesService>(p => p.GetRequiredService<ConsulDiscoveryServicesService>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<ConsulXenaDiscoveryServicesService>();
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaInitializeDiscoveryServicesService>(p => p.GetRequiredService<ConsulXenaDiscoveryServicesService>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<ConsulXenaDiscoveryServicesService>());
 
-        discoveryServicesConfigurator.AddPostBuildAction(application =>
+        xenaDiscoveryServicesConfigurator.AddPostBuildAction(application =>
         {
             var hostApplicationLifetime = application.Services.GetRequiredService<IHostApplicationLifetime>();
-            var consulService = application.Services.GetRequiredService<ConsulDiscoveryServicesService>();
+            var consulService = application.Services.GetRequiredService<ConsulXenaDiscoveryServicesService>();
 
             hostApplicationLifetime.ApplicationStarted.Register(async () =>
             {
@@ -24,6 +24,6 @@ public static class ConsulDiscoveryServicesExtensions
             });
         });
 
-        return discoveryServicesConfigurator;
+        return xenaDiscoveryServicesConfigurator;
     }
 }
