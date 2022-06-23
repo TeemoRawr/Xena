@@ -1,9 +1,11 @@
-﻿using Xena.Discovery.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xena.Discovery.Configuration;
 using Xena.Discovery.Interfaces;
 using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Memory;
 
+[ExcludeFromCodeCoverage]
 public static class MemoryDiscoveryServicesExtensions
 {
     public static IXenaDiscoveryServicesConfigurator AddMemoryDiscover(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator, IEnumerable<Service> services)

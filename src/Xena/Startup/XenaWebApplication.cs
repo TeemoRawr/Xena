@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Xena.Startup;
 
+[ExcludeFromCodeCoverage]
 public sealed class XenaWebApplication : IHost, IApplicationBuilder, IEndpointRouteBuilder, IAsyncDisposable
 {
     internal WebApplication WebApplication { get; }

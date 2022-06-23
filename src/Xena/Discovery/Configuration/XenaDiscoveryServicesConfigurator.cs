@@ -1,8 +1,10 @@
-﻿using Xena.HealthCheck;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xena.HealthCheck;
 using Xena.Startup;
 
 namespace Xena.Discovery.Configuration;
 
+[ExcludeFromCodeCoverage]
 internal class XenaDiscoveryServicesConfigurator : IXenaDiscoveryServicesConfigurator
 {
     private readonly IXenaWebApplicationBuilder _xenaWebApplicationBuilder;

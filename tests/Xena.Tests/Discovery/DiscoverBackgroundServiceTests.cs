@@ -1,6 +1,9 @@
-﻿using Moq;
+﻿using AutoFixture;
+using Microsoft.Extensions.Options;
+using Moq;
 using Xena.Discovery;
 using Xena.Discovery.Interfaces;
+using Xena.Discovery.Models;
 
 namespace Xena.Tests.Discovery;
 
@@ -8,6 +11,7 @@ public class DiscoverBackgroundServiceTests
 {
     private Mock<IXenaInitializeDiscoveryServicesService> _initializeDiscoveryServicesServiceMock = null!;
     private Mock<IXenaDiscoveryServicesService> _discoveryServicesServiceMock = null!;
+    private readonly IFixture _fixture = new Fixture();
 
     [Fact]
     public async Task ExecuteAsync_ShouldInvokeInitialize()
@@ -62,8 +66,13 @@ public class DiscoverBackgroundServiceTests
         _initializeDiscoveryServicesServiceMock = new Mock<IXenaInitializeDiscoveryServicesService>();
         _discoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesService>();
 
+        var xenaDiscoveryOptions = new XenaDiscoveryOptions();
+        var wrappedOptions = Options.Create(xenaDiscoveryOptions);
+
+
         return new DiscoverBackgroundService(
             _initializeDiscoveryServicesServiceMock.Object,
-            _discoveryServicesServiceMock.Object);
+            _discoveryServicesServiceMock.Object,
+            wrappedOptions);
     }
 }

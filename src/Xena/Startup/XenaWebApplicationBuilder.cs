@@ -1,5 +1,8 @@
-﻿namespace Xena.Startup;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace Xena.Startup;
+
+[ExcludeFromCodeCoverage]
 internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
 {
     public WebApplicationBuilder WebApplicationBuilder { get; }
