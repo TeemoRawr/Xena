@@ -13,7 +13,6 @@ public static class MemoryDiscoveryServicesExtensions
         var memoryDiscoveryServicesService = new MemoryXenaDiscoveryServicesService(services);
 
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton(_ => memoryDiscoveryServicesService);
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaInitializeDiscoveryServicesService>(p => p.GetRequiredService<MemoryXenaDiscoveryServicesService>());
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<MemoryXenaDiscoveryServicesService>());
 
         return xenaDiscoveryServicesConfigurator;

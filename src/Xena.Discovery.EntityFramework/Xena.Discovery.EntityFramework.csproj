@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Consul" Version="1.6.10.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,10 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Properties\launchSettings.json">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </None>
+    <Folder Include="Context\" />
   </ItemGroup>
 
 </Project>

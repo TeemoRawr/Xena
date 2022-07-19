@@ -3,7 +3,7 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Memory;
 
-internal class MemoryXenaDiscoveryServicesService : IXenaDiscoveryServicesService, IXenaInitializeDiscoveryServicesService
+internal class MemoryXenaDiscoveryServicesService : IXenaDiscoveryServicesService
 {
     private readonly List<Service> _services;
 
@@ -25,18 +25,6 @@ internal class MemoryXenaDiscoveryServicesService : IXenaDiscoveryServicesServic
     }
 
     public Task RefreshServicesAsync(CancellationToken stoppingToken)
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task InitializeAsync(CancellationToken stoppingToken)
-    {
-        return Task.CompletedTask;
-    }
-
-    public bool Initialized => _services.Any();
-
-    public Task DeactivateAsync()
     {
         return Task.CompletedTask;
     }

@@ -9,35 +9,17 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Consul;
 
-internal class ConsulXenaDiscoveryServicesService : IXenaInitializeDiscoveryServicesService, IXenaDiscoveryServicesService, IDisposable
+internal class ConsulXenaDiscoveryServicesService : IXenaDiscoveryServicesService, IDisposable
 {
     private IConsulClient? _consulClient;
     private readonly IServer _serverAddressesFeature;
     private readonly IOptions<ConsulDiscoveryServicesConfiguration> _consulOptions;
     private readonly List<Service> _services = new ();
 
-    public bool Initialized { get; private set; }
-
     public ConsulXenaDiscoveryServicesService(IServer serverAddressesFeature, IOptions<ConsulDiscoveryServicesConfiguration> consulOptions)
     {
         _serverAddressesFeature = serverAddressesFeature;
         _consulOptions = consulOptions;
-    }
-
-    public async Task InitializeAsync(CancellationToken stoppingToken)
-    {
-        var waitCounter = 0;
-
-        while (!stoppingToken.IsCancellationRequested && !Initialized && waitCounter < 30)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
-            waitCounter++;
-        }
-
-        if (!Initialized)
-        {
-            throw new Exception("Cannot initialize Consul");
-        }
     }
 
     public Task DeactivateAsync()
@@ -80,7 +62,7 @@ internal class ConsulXenaDiscoveryServicesService : IXenaInitializeDiscoveryServ
         _consulClient?.Dispose();
     }
 
-    internal async Task InitializeConsulAsync()
+    public async Task InitializeConsulAsync()
     {
         var addresses = _serverAddressesFeature.Features.Get<IServerAddressesFeature>();
 
@@ -127,7 +109,5 @@ internal class ConsulXenaDiscoveryServicesService : IXenaInitializeDiscoveryServ
             throw new Exception(
                 $"Error occurred while register service with name {consulDiscoveryServicesConfiguration.Name} exists in Consul.");
         }
-
-        Initialized = true;
     }
 }

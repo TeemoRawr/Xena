@@ -26,28 +26,4 @@ public class MemoryXenaDiscoveryServicesServiceTests
 
         addedService.Should().BeEquivalentTo(serviceToAdd);
     }
-
-    [Fact]
-    public void ServiceIsNotInitialized_WhenServiceListIsEmpty()
-    {
-        // arrange 
-        var emptyCollectionOfServices = Enumerable.Empty<Service>().ToList();
-
-        var sut = new MemoryXenaDiscoveryServicesService(emptyCollectionOfServices);
-        
-        // assert
-        sut.Initialized.Should().BeFalse();
-    }
-
-    [Fact]
-    public void ServiceIsInitialized_WhenServiceListContainsSomeElements()
-    {
-        // arrange 
-        var collectionOfServices = _fixture.CreateMany<Service>();
-
-        var sut = new MemoryXenaDiscoveryServicesService(collectionOfServices);
-        
-        // assert
-        sut.Initialized.Should().BeTrue();
-    }
 }
