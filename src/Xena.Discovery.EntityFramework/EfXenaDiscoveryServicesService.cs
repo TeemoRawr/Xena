@@ -20,10 +20,22 @@ internal class EfXenaDiscoveryServicesService : IXenaDiscoveryServicesService
         await _context.SaveChangesAsync();
     }
 
+    public Task AddServiceTagAsync(params string[] tags)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Service?> GetServiceAsync(string id)
     {
         var service = await _context.Services.SingleOrDefaultAsync(s => s.Id == id);
         return service;
+    }
+
+    public async Task<IReadOnlyList<Service>> FindByTagAsync(string tag)
+    {
+        var services = await _context.Services.Where(p => p.Tags.Contains(tag)).ToListAsync();
+
+        return services;
     }
 
     public Task RefreshServicesAsync(CancellationToken stoppingToken)

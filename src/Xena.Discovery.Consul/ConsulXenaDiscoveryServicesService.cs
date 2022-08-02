@@ -35,22 +35,65 @@ internal class ConsulXenaDiscoveryServicesService : IXenaDiscoveryServicesServic
         return Task.CompletedTask;
     }
 
+    public async Task AddServiceTagAsync(params string[] tags)
+    {
+        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
+
+        var selfService = _services.Single(s => s.Id == consulDiscoveryServicesConfiguration.Id);
+
+        selfService.AddTags(tags);
+
+        var addresses = _serverAddressesFeature.Features.Get<IServerAddressesFeature>();
+
+        if (addresses is null)
+        {
+            throw new NullReferenceException();
+        }
+
+        var preferredAddress = addresses.Addresses.First();
+
+        var uri = new Uri(preferredAddress);
+
+        var serviceRegister = await _consulClient!.Agent.ServiceRegister(new AgentServiceRegistration
+        {
+            ID = consulDiscoveryServicesConfiguration.Id,
+            Name = consulDiscoveryServicesConfiguration.Name,
+            Address = $"{uri.Scheme}://{uri.Host}",
+            Port = uri.Port,
+            Tags = new[] { consulDiscoveryServicesConfiguration.Name },
+        });
+
+        if (serviceRegister.StatusCode != HttpStatusCode.OK)
+        {
+            throw new Exception("Error occurred while updating service in Consul");
+        }
+    }
+
     public Task<Service?> GetServiceAsync(string id)
     {
         var service = _services.SingleOrDefault(s => s.Id == id);
         return Task.FromResult(service);
     }
 
+    public Task<IReadOnlyList<Service>> FindByTagAsync(string tag)
+    {
+        var services = _services.Where(s => s.Tags.Contains(tag)).ToList();
+        return Task.FromResult<IReadOnlyList<Service>>(services);
+    }
+
     public async Task RefreshServicesAsync(CancellationToken stoppingToken)
     {
         var servicesResponse = await _consulClient!.Agent.Services(stoppingToken);
         var servicesFromConsul = servicesResponse.Response.Values;
-        var services = servicesFromConsul.Select(s => new Service
+        var services = servicesFromConsul.Select(s =>
         {
-            Id = s.ID,
-            Name = s.ID,
-            Address = s.Address,
-            Port = s.Port
+            return new Service
+            {
+                Id = s.ID,
+                Name = s.ID,
+                Address = s.Address,
+                Port = s.Port
+            };
         }).ToList();
 
         _services.Clear();
@@ -89,7 +132,7 @@ internal class ConsulXenaDiscoveryServicesService : IXenaDiscoveryServicesServic
             TTL = TimeSpan.FromSeconds(10)
         });
 
-        if (checkRegister.StatusCode == HttpStatusCode.NotFound)
+        if (checkRegister.StatusCode != HttpStatusCode.NotFound)
         {
             throw new Exception(
                 $"Service with name {consulDiscoveryServicesConfiguration.Name} exists in Consul. Please check name of application");

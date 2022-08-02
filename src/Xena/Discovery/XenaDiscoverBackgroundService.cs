@@ -4,12 +4,12 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery;
 
-internal class DiscoverBackgroundService : BackgroundService
+internal class XenaDiscoverBackgroundService : BackgroundService
 {
     private readonly IXenaDiscoveryServicesService _xenaDiscoveryServicesService;
     private readonly IOptions<XenaDiscoveryOptions> _xenaDiscoveryOptions;
 
-    public DiscoverBackgroundService(
+    public XenaDiscoverBackgroundService(
         IXenaDiscoveryServicesService xenaDiscoveryServicesService,
         IOptions<XenaDiscoveryOptions> xenaDiscoveryOptions)
     {

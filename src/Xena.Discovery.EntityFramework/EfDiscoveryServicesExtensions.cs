@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Xena.Discovery.Configuration;
 using Xena.Discovery.EntityFramework.Context;
 using Xena.Discovery.Interfaces;
@@ -23,7 +24,8 @@ public static class EfDiscoveryServicesExtensions
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddTransient(_ => dbContextOptions);
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddTransient<DiscoveryContext>();
 
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService, EfXenaDiscoveryServicesService>();
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<EfXenaDiscoveryServicesService>();
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<EfXenaDiscoveryServicesService>());
         
         return xenaDiscoveryServicesConfigurator;
     }

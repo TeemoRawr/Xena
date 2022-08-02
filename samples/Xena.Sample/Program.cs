@@ -19,7 +19,7 @@ builder.Configure(applicationBuilder =>
 var app = builder
     .AddDiscoveryServicesService(configurator =>
     {
-        ConsulDiscoveryServicesExtensions.AddConsulDiscover(configurator
+        XenaConsulDiscoveryServicesExtensions.AddConsulDiscover(configurator
                 .AddHealthCheck());
     })
     .AddHealthChecks()

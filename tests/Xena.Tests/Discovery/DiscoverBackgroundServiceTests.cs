@@ -28,7 +28,7 @@ public class DiscoverBackgroundServiceTests
         _discoveryServicesServiceMock.Verify(p => p.RefreshServicesAsync(It.IsAny<CancellationToken>()), Times.AtMostOnce);
     }
 
-    private DiscoverBackgroundService CreateSut()
+    private XenaDiscoverBackgroundService CreateSut()
     {
         _discoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesService>();
 
@@ -36,7 +36,7 @@ public class DiscoverBackgroundServiceTests
         var wrappedOptions = Options.Create(xenaDiscoveryOptions);
 
 
-        return new DiscoverBackgroundService(
+        return new XenaDiscoverBackgroundService(
             _discoveryServicesServiceMock.Object,
             wrappedOptions);
     }

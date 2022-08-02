@@ -24,6 +24,12 @@ internal class MemoryXenaDiscoveryServicesService : IXenaDiscoveryServicesServic
         return Task.FromResult(service);
     }
 
+    public Task<IReadOnlyList<Service>> FindByTagAsync(string tag)
+    {
+        var services = _services.Where(s => s.Tags.Contains(tag)).ToList();
+        return Task.FromResult<IReadOnlyList<Service>>(services);
+    }
+
     public Task RefreshServicesAsync(CancellationToken stoppingToken)
     {
         return Task.CompletedTask;

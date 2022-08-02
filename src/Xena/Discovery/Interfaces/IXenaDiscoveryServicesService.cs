@@ -5,6 +5,8 @@ namespace Xena.Discovery.Interfaces;
 public interface IXenaDiscoveryServicesService
 {
     Task AddServiceAsync(Service service);
+    Task AddServiceTagAsync(params string[] tags);
     Task<Service?> GetServiceAsync(string id);
+    Task<IReadOnlyList<Service>> FindByTagAsync(string tag);
     Task RefreshServicesAsync(CancellationToken stoppingToken);
 }

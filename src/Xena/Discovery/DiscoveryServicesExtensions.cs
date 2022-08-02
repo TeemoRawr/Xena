@@ -18,7 +18,7 @@ public static class DiscoveryServicesExtensions
 
     public static IXenaWebApplicationBuilder AddDiscoveryServicesService(this IXenaWebApplicationBuilder webApplicationBuilder, XenaDiscoveryOptions options, Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
     {
-        webApplicationBuilder.WebApplicationBuilder.Services.AddHostedService<DiscoverBackgroundService>();
+        webApplicationBuilder.WebApplicationBuilder.Services.AddHostedService<XenaDiscoverBackgroundService>();
 
         var wrappedOptions = Options.Create(options);
         webApplicationBuilder.WebApplicationBuilder.Services.AddSingleton(_ => wrappedOptions);
