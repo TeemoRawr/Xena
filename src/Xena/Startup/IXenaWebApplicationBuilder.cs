@@ -14,7 +14,7 @@ public interface IXenaWebApplicationBuilder
     /// Callback which will be invoked when application will be builded
     /// </param>
     /// <returns>
-    /// Returns the same builder to allow use it fluently
+    /// Allows fluent usage by returning the same builder
     /// </returns>
     IXenaWebApplicationBuilder AddPostBuildAction(Action<WebApplication> action);
 

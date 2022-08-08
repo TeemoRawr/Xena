@@ -3,7 +3,7 @@
 namespace Xena.HealthCheck;
 
 /// <summary>
-/// Interface used internal by Xena framework which allow add custom health check. All implementations of the interface are automatically discovered
+/// Interface used internally by Xena framework which allows adding custom health check. All implementations of the interface are automatically discovered
 /// </summary>
 public interface IXenaHealthCheck
 {
@@ -18,7 +18,7 @@ public interface IXenaHealthCheck
     bool Enabled { get; }
 
     /// <summary>
-    /// Method which is invoked each time when health check is invoked
+    /// Method which allows adding action when the application is built. E.g you can use it to invoke some service after build
     /// </summary>
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
