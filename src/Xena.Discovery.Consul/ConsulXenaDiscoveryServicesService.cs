@@ -13,10 +13,10 @@ internal class ConsulXenaDiscoveryServicesService : IXenaDiscoveryServicesServic
 {
     private IConsulClient? _consulClient;
     private readonly IServer _serverAddressesFeature;
-    private readonly IOptions<ConsulDiscoveryServicesConfiguration> _consulOptions;
+    private readonly IOptions<ConsulXenaDiscoveryServicesConfiguration> _consulOptions;
     private readonly List<Service> _services = new ();
 
-    public ConsulXenaDiscoveryServicesService(IServer serverAddressesFeature, IOptions<ConsulDiscoveryServicesConfiguration> consulOptions)
+    public ConsulXenaDiscoveryServicesService(IServer serverAddressesFeature, IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions)
     {
         _serverAddressesFeature = serverAddressesFeature;
         _consulOptions = consulOptions;

@@ -7,7 +7,7 @@ using Xena.Discovery.Interfaces;
 namespace Xena.Discovery.Consul;
 
 [ExcludeFromCodeCoverage]
-public static class XenaConsulDiscoveryServicesExtensions
+public static class ConsulXenaDiscoveryServicesExtensions
 {
     public static IXenaDiscoveryServicesConfigurator AddConsulDiscover(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator)
     {
