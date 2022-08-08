@@ -9,14 +9,19 @@ namespace Xena.Discovery;
 [ExcludeFromCodeCoverage]
 public static class DiscoveryServicesExtensions
 {
-    public static IXenaWebApplicationBuilder AddDiscoveryServicesService(this IXenaWebApplicationBuilder webApplicationBuilder, Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
+    public static IXenaWebApplicationBuilder AddDiscoveryServicesService(
+        this IXenaWebApplicationBuilder webApplicationBuilder, 
+        Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
     {
         var defaultXenaDiscoveryOptions = new XenaDiscoveryOptions();
 
         return AddDiscoveryServicesService(webApplicationBuilder, defaultXenaDiscoveryOptions, configuratorAction);
     }
 
-    public static IXenaWebApplicationBuilder AddDiscoveryServicesService(this IXenaWebApplicationBuilder webApplicationBuilder, XenaDiscoveryOptions options, Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
+    public static IXenaWebApplicationBuilder AddDiscoveryServicesService(
+        this IXenaWebApplicationBuilder webApplicationBuilder, 
+        XenaDiscoveryOptions options, 
+        Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
     {
         webApplicationBuilder.WebApplicationBuilder.Services.AddHostedService<XenaDiscoverBackgroundService>();
 
