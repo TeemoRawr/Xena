@@ -13,12 +13,6 @@ internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
         WebApplicationBuilder = webApplicationBuilder;
     }
 
-    public IXenaWebApplicationBuilder Configure(Action<WebApplicationBuilder> webApplicationBuilderAction)
-    {
-        webApplicationBuilderAction(WebApplicationBuilder);
-        return this;
-    }
-
     public IXenaWebApplicationBuilder AddPostBuildAction(Action<WebApplication> action)
     {
         _postBuildActions.Add(action);

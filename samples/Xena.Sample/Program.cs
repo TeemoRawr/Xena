@@ -7,20 +7,20 @@ using Xena.Startup;
 
 var builder = XenaFactory.Build(args);
 
-builder.Configure(applicationBuilder =>
-{
-    applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-    applicationBuilder.Services.AddRazorPages();
+var applicationBuilder = builder.WebApplicationBuilder;
 
-    applicationBuilder.Services.AddOptions<ConsulDiscoveryServicesConfiguration>()
-        .BindConfiguration("Consul");
-});
+applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+applicationBuilder.Services.AddRazorPages();
+
+applicationBuilder.Services.AddOptions<ConsulDiscoveryServicesConfiguration>()
+    .BindConfiguration("Consul");
 
 var app = builder
     .AddDiscoveryServicesService(configurator =>
     {
-        XenaConsulDiscoveryServicesExtensions.AddConsulDiscover(configurator
-                .AddHealthCheck());
+        configurator
+            .AddHealthCheck()
+            .AddConsulDiscover();
     })
     .AddHealthChecks()
     .Build();
