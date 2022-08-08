@@ -17,7 +17,7 @@ internal class XenaHttpClientFactory
     {
         var httpClientName = typeof(THttpClient).FullName;
 
-        var services = await _discoveryServicesService.FindByTagAsync(httpClientName);
+        var services = await _discoveryServicesService.FindByTagAsync(httpClientName!);
 
         if (!services.Any())
         {
