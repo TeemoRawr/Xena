@@ -7,7 +7,7 @@ using Xena.Startup;
 namespace Xena.Discovery;
 
 [ExcludeFromCodeCoverage]
-public static class DiscoveryServicesExtensions
+public static class XenaDiscoveryServicesExtensions
 {
     public static IXenaWebApplicationBuilder AddDiscoveryServicesService(
         this IXenaWebApplicationBuilder webApplicationBuilder, 
