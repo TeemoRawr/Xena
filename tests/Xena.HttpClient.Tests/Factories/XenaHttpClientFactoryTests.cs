@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Refit;
 using Xena.Discovery.Interfaces;
@@ -29,11 +30,13 @@ public class XenaHttpClientFactoryTests
             .CreateMany(1)
             .ToList();
 
+        var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
+
         var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesService>();
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(services);
 
-        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object);
+        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
         // act
         var result = await sut.CreateHttpClient<ITestHttpClient>();
@@ -57,7 +60,9 @@ public class XenaHttpClientFactoryTests
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(services);
 
-        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object);
+        var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
+
+        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
         // act and assert
         var exception = await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
@@ -74,7 +79,9 @@ public class XenaHttpClientFactoryTests
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(Enumerable.Empty<Service>().ToList());
 
-        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object);
+        var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
+
+        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
         // act and assert
         var exception = await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
