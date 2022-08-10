@@ -32,8 +32,8 @@ internal class XenaHttpClientFactory
         }
 
         var service = services.Single();
-
-        var xenaHttpClient = RestService.For<THttpClient>(service.Address);
+        
+        var xenaHttpClient = RestService.For<THttpClient>($"{service.Address}:{ service.Port}");
 
         return xenaHttpClient;
     }
