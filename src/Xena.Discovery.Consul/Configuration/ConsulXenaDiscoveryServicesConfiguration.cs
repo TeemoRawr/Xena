@@ -1,6 +1,6 @@
 ﻿namespace Xena.Discovery.Consul.Configuration;
 
-public class ConsulDiscoveryServicesConfiguration
+public class ConsulXenaDiscoveryServicesConfiguration
 {
     public string Host { get; set; } = null!;
     public string Id { get; set; } = null!;

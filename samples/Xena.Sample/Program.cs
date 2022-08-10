@@ -12,8 +12,8 @@ var applicationBuilder = builder.WebApplicationBuilder;
 applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 applicationBuilder.Services.AddRazorPages();
 
-applicationBuilder.Services.AddOptions<ConsulDiscoveryServicesConfiguration>()
-    .BindConfiguration("Consul");
+    applicationBuilder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
+        .BindConfiguration("Consul");
 
 var app = builder
     .AddDiscoveryServicesService(configurator =>
