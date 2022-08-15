@@ -10,9 +10,11 @@ internal class XenaHttpClientFactory
     private readonly IXenaDiscoveryServicesService _discoveryServicesService;
     private readonly ILogger<XenaHttpClientFactory> _logger;
 
-    public XenaHttpClientFactory(IXenaDiscoveryServicesService discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
+    public XenaHttpClientFactory(IXenaDiscoveryServicesService? discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
     {
-        _discoveryServicesService = discoveryServicesService;
+        _discoveryServicesService = discoveryServicesService ?? 
+                                    throw new NullReferenceException($"Interface {nameof(IXenaDiscoveryServicesService)} is not registered. " +
+                                                                    "Please add Discovery module to application");
         _logger = logger;
     }
 

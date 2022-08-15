@@ -74,7 +74,6 @@ public class XenaHttpClientFactoryTests
     public async Task CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
     {
         // arrange
-
         var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesService>();
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(Enumerable.Empty<Service>().ToList());
@@ -87,5 +86,18 @@ public class XenaHttpClientFactoryTests
         var exception = await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
         exception.Message.Should()
             .Be($"Not found registered service for HttpClient {typeof(ITestHttpClient).FullName}");
+    }
+
+    [Fact]
+    public void CreateHttpClient_WithoutServiceDiscovery_ShouldThrowAnExceptionOnInitialize()
+    {
+        // arrange
+        var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
+
+        // act and assert
+        var exception = Assert.Throws<NullReferenceException>(() => new XenaHttpClientFactory(null, loggerMock.Object));
+        exception.Message.Should()
+            .Be($"Interface {nameof(IXenaDiscoveryServicesService)} is not registered. " +
+                "Please add Discovery module to application");
     }
 }
