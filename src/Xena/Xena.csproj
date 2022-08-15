@@ -12,4 +12,8 @@
 	<IsPackable>true</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="HealthCheck\Configuration\" />
+  </ItemGroup>
+
 </Project>
