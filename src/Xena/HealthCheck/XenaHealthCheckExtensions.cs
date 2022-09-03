@@ -7,7 +7,6 @@ using Xena.Startup;
 
 namespace Xena.HealthCheck;
 
-[ExcludeFromCodeCoverage]
 public static class XenaHealthCheckExtensions
 {
     public static IXenaWebApplicationBuilder AddHealthChecks(

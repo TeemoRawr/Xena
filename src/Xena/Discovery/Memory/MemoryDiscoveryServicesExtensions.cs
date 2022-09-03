@@ -8,7 +8,7 @@ namespace Xena.Discovery.Memory;
 [ExcludeFromCodeCoverage]
 public static class MemoryDiscoveryServicesExtensions
 {
-    public static IXenaDiscoveryServicesConfigurator AddMemoryDiscover(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator, IEnumerable<Service> services)
+    public static IXenaDiscoveryServicesConfigurator AddMemoryProvider(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator, IEnumerable<Service> services)
     {
         var memoryDiscoveryServicesService = new MemoryXenaDiscoveryServicesService(services);
 

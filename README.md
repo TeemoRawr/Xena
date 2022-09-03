@@ -43,5 +43,43 @@ app.MapRazorPages();
 app.Run();
 ```
 
+# Extensions
+
+## Discovery
+Discovery service allows application in easy way to retrieve information of the rest of other applications in ecosystem.
+
+### Usage
+To add Discovery extensions you need execute method `AddDiscoveryServicesService` on Xena application builder.
+```
+var app = builder
+    .AddDiscoveryServicesService(configurator =>
+    {
+        // configuration here
+    })
+    .Build();
+```
+### Providers
+Default provider build in Xena package is memory provider, which allow set address of the services set manualy.
+
+```
+builder.AddDiscoveryServicesService(configurator =>
+{
+    configurator.AddMemoryProvider(new List<Service>
+    {
+        new Service
+        {
+            Id = "MyApplication",
+            Name = "My application",
+            Address = "localhost",
+            Port = 4026
+        }
+    });
+})
+```
+
+The other available providers are
+* Xena.Discovery.Consul
+* Xena.Discovery.EntityFramework
+
 # Contributing
 (TODO)

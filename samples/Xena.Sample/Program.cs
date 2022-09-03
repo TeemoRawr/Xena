@@ -2,6 +2,8 @@ using Autofac.Extensions.DependencyInjection;
 using Xena.Discovery;
 using Xena.Discovery.Consul;
 using Xena.Discovery.Consul.Configuration;
+using Xena.Discovery.Memory;
+using Xena.Discovery.Models;
 using Xena.HealthCheck;
 using Xena.Startup;
 
@@ -18,9 +20,16 @@ applicationBuilder.Services.AddRazorPages();
 var app = builder
     .AddDiscoveryServicesService(configurator =>
     {
-        configurator
-            .AddHealthCheck()
-            .AddConsulDiscover();
+        configurator.AddMemoryProvider(new List<Service>
+        {
+            new Service
+            {
+                Id = "MyApplication",
+                Name = "My application",
+                Address = "localhost",
+                Port = 4026
+            }
+        });
     })
     .AddHealthChecks()
     .Build();
