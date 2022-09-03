@@ -18,19 +18,6 @@ applicationBuilder.Services.AddRazorPages();
         .BindConfiguration("Consul");
 
 var app = builder
-    .AddDiscoveryServicesService(configurator =>
-    {
-        configurator.AddMemoryProvider(new List<Service>
-        {
-            new Service
-            {
-                Id = "MyApplication",
-                Name = "My application",
-                Address = "localhost",
-                Port = 4026
-            }
-        });
-    })
     .AddHealthChecks()
     .Build();
 
