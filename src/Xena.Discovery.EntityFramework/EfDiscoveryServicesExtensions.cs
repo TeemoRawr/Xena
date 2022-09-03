@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Xena.Discovery.Configuration;
 using Xena.Discovery.EntityFramework.Context;
 using Xena.Discovery.Interfaces;
@@ -11,7 +10,7 @@ namespace Xena.Discovery.EntityFramework;
 [ExcludeFromCodeCoverage]
 public static class EfDiscoveryServicesExtensions
 {
-    public static IXenaDiscoveryServicesConfigurator AddConsulDiscover(
+    public static IXenaDiscoveryServicesConfigurator AddEfProvider(
         this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator, 
         Action<DbContextOptionsBuilder<DiscoveryContext>>? contextOptionsBuilderAction = null)
     {

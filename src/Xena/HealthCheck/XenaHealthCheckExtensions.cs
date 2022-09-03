@@ -2,15 +2,20 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Xena.HealthCheck.Configuration;
 using Xena.Startup;
 
 namespace Xena.HealthCheck;
 
-[ExcludeFromCodeCoverage]
 public static class XenaHealthCheckExtensions
 {
-    public static IXenaWebApplicationBuilder AddHealthChecks(this IXenaWebApplicationBuilder webApplicationBuilder)
+    public static IXenaWebApplicationBuilder AddHealthChecks(
+        this IXenaWebApplicationBuilder webApplicationBuilder,
+        Action<IXenaHealthCheckConfigurator>? configurationAction = null)
     {
+        var healthCheckConfigurator = new XenaHealthCheckConfigurator(webApplicationBuilder);
+        configurationAction?.Invoke(healthCheckConfigurator);
+
         webApplicationBuilder.WebApplicationBuilder.Services.AddHealthChecks()
             .AddCheck<XenaHealthCheck>("Xena Health Check", tags: new[] { "xena-health-check" });
 

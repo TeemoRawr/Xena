@@ -2,25 +2,34 @@ using Autofac.Extensions.DependencyInjection;
 using Xena.Discovery;
 using Xena.Discovery.Consul;
 using Xena.Discovery.Consul.Configuration;
+using Xena.Discovery.Memory;
+using Xena.Discovery.Models;
 using Xena.HealthCheck;
 using Xena.Startup;
 
 var builder = XenaFactory.Build(args);
 
-builder.Configure(applicationBuilder =>
-{
-    applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-    applicationBuilder.Services.AddRazorPages();
+var applicationBuilder = builder.WebApplicationBuilder;
+
+applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+applicationBuilder.Services.AddRazorPages();
 
     applicationBuilder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
         .BindConfiguration("Consul");
-});
 
 var app = builder
     .AddDiscoveryServicesService(configurator =>
     {
-        ConsulXenaDiscoveryServicesExtensions.AddConsulDiscover(configurator
-                .AddHealthCheck());
+        configurator.AddMemoryProvider(new List<Service>
+        {
+            new Service
+            {
+                Id = "MyApplication",
+                Name = "My application",
+                Address = "localhost",
+                Port = 4026
+            }
+        });
     })
     .AddHealthChecks()
     .Build();

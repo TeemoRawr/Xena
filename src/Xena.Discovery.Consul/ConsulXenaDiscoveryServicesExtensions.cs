@@ -9,7 +9,7 @@ namespace Xena.Discovery.Consul;
 [ExcludeFromCodeCoverage]
 public static class ConsulXenaDiscoveryServicesExtensions
 {
-    public static IXenaDiscoveryServicesConfigurator AddConsulDiscover(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator)
+    public static IXenaDiscoveryServicesConfigurator AddConsulProvider(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator)
     {
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<ConsulXenaDiscoveryServicesService>();
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<ConsulXenaDiscoveryServicesService>());
