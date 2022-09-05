@@ -45,6 +45,34 @@ app.Run();
 
 # Extensions
 
+# Health Check
+Xena framework allow agregate all health checks in one which allow check simply general health of service.
+
+### Usage
+To add Helath check extensions you need execute method `AddHealthChecks` on Xena application builder.
+```
+var app = builder
+    .AddHealthChecks()
+    .Build();
+```
+
+### Adding health check to service
+If you want to add your health check service you need implement `IXenaHealthCheck` and register it in DI. You can register many if you need one more one health check.
+```
+applicationBuilder.Services.AddSingleton<IXenaHealthCheck, MyHealthCheck>();
+```
+
+### Automatic health check discovery
+Instead of registration all your health checks, you can enable auto discovery of all the services. To enable automatic health check discovery you need enable it in configuration of health check.
+```
+var app = builder
+    .AddHealthChecks(configurator =>
+    {
+        configurator.EnableAutoDiscoveryHealthChecks();
+    })
+    .Build();
+```
+
 ## Discovery
 Discovery service allows application in easy way to retrieve information of the rest of other applications in ecosystem.
 
