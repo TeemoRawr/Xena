@@ -5,11 +5,11 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.EntityFramework;
 
-internal class EfXenaDiscoveryServicesService : IXenaDiscoveryServicesService
+internal class EfXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvider
 {
     private readonly DiscoveryContext _context;
 
-    public EfXenaDiscoveryServicesService(DiscoveryContext context)
+    public EfXenaDiscoveryServicesProvider(DiscoveryContext context)
     {
         _context = context;
     }

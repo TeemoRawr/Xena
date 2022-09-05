@@ -11,13 +11,13 @@ public static class ConsulXenaDiscoveryServicesExtensions
 {
     public static IXenaDiscoveryServicesConfigurator AddConsulProvider(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator)
     {
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<ConsulXenaDiscoveryServicesService>();
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<ConsulXenaDiscoveryServicesService>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<ConsulXenaDiscoveryServicesProvider>();
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesProvider>(p => p.GetRequiredService<ConsulXenaDiscoveryServicesProvider>());
 
         xenaDiscoveryServicesConfigurator.AddPostBuildAction(application =>
         {
             var hostApplicationLifetime = application.Services.GetRequiredService<IHostApplicationLifetime>();
-            var consulService = application.Services.GetRequiredService<ConsulXenaDiscoveryServicesService>();
+            var consulService = application.Services.GetRequiredService<ConsulXenaDiscoveryServicesProvider>();
 
             hostApplicationLifetime.ApplicationStarted.Register(async () =>
             {

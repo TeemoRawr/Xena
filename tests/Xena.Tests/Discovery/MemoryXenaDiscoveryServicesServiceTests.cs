@@ -16,7 +16,7 @@ public class MemoryXenaDiscoveryServicesServiceTests
         var emptyCollectionOfServices = Enumerable.Empty<Service>().ToList();
         var serviceToAdd = _fixture.Create<Service>();
 
-        var sut = new MemoryXenaDiscoveryServicesService(emptyCollectionOfServices);
+        var sut = new MemoryXenaDiscoveryServicesProvider(emptyCollectionOfServices);
 
         // act
         await sut.AddServiceAsync(serviceToAdd);

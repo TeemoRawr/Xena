@@ -2,7 +2,7 @@
 
 namespace Xena.Discovery.Interfaces;
 
-public interface IXenaDiscoveryServicesService
+public interface IXenaDiscoveryServicesProvider
 {
     Task AddServiceAsync(Service service);
     Task AddServiceTagAsync(params string[] tags);

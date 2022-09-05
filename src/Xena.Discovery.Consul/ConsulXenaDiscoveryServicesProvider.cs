@@ -9,14 +9,14 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Consul;
 
-internal class ConsulXenaDiscoveryServicesService : IXenaDiscoveryServicesService, IDisposable
+internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvider, IDisposable
 {
     private IConsulClient? _consulClient;
     private readonly IServer _serverAddressesFeature;
     private readonly IOptions<ConsulXenaDiscoveryServicesConfiguration> _consulOptions;
     private readonly List<Service> _services = new ();
 
-    public ConsulXenaDiscoveryServicesService(IServer serverAddressesFeature, IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions)
+    public ConsulXenaDiscoveryServicesProvider(IServer serverAddressesFeature, IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions)
     {
         _serverAddressesFeature = serverAddressesFeature;
         _consulOptions = consulOptions;

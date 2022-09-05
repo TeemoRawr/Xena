@@ -28,7 +28,7 @@ internal class XenaHttpClientConfigurator : IXenaHttpClientConfigurator
         {
             var httpClientName = typeof(THttpClient).FullName;
 
-            var discoveryServicesService = application.Services.GetRequiredService<IXenaDiscoveryServicesService>();
+            var discoveryServicesService = application.Services.GetRequiredService<IXenaDiscoveryServicesProvider>();
 
             discoveryServicesService.AddServiceTagAsync(httpClientName!);
         });

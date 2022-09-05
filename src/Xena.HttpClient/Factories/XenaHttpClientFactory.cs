@@ -7,13 +7,13 @@ namespace Xena.HttpClient.Factories;
 
 internal class XenaHttpClientFactory
 {
-    private readonly IXenaDiscoveryServicesService _discoveryServicesService;
+    private readonly IXenaDiscoveryServicesProvider _discoveryServicesProvider;
     private readonly ILogger<XenaHttpClientFactory> _logger;
 
-    public XenaHttpClientFactory(IXenaDiscoveryServicesService? discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
+    public XenaHttpClientFactory(IXenaDiscoveryServicesProvider? discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
     {
-        _discoveryServicesService = discoveryServicesService ?? 
-                                    throw new NullReferenceException($"Interface {nameof(IXenaDiscoveryServicesService)} is not registered. " +
+        _discoveryServicesProvider = discoveryServicesService ?? 
+                                    throw new NullReferenceException($"Interface {nameof(IXenaDiscoveryServicesProvider)} is not registered. " +
                                                                     "Please add Discovery module to application");
         _logger = logger;
     }
@@ -23,7 +23,7 @@ internal class XenaHttpClientFactory
         var httpClientName = typeof(THttpClient).FullName;
         _logger.LogDebug($"Create HttpClient interface {httpClientName}");
 
-        var services = await _discoveryServicesService.FindByTagAsync(httpClientName!);
+        var services = await _discoveryServicesProvider.FindByTagAsync(httpClientName!);
 
         if (!services.Any())
         {

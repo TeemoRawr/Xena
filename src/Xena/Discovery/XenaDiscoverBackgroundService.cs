@@ -6,14 +6,14 @@ namespace Xena.Discovery;
 
 internal class XenaDiscoverBackgroundService : BackgroundService
 {
-    private readonly IXenaDiscoveryServicesService _xenaDiscoveryServicesService;
+    private readonly IXenaDiscoveryServicesProvider _xenaDiscoveryServicesProvider;
     private readonly IOptions<XenaDiscoveryOptions> _xenaDiscoveryOptions;
 
     public XenaDiscoverBackgroundService(
-        IXenaDiscoveryServicesService xenaDiscoveryServicesService,
+        IXenaDiscoveryServicesProvider xenaDiscoveryServicesProvider,
         IOptions<XenaDiscoveryOptions> xenaDiscoveryOptions)
     {
-        _xenaDiscoveryServicesService = xenaDiscoveryServicesService;
+        _xenaDiscoveryServicesProvider = xenaDiscoveryServicesProvider;
         _xenaDiscoveryOptions = xenaDiscoveryOptions;
     }
 
@@ -25,7 +25,7 @@ internal class XenaDiscoverBackgroundService : BackgroundService
 
             try
             {
-                await _xenaDiscoveryServicesService.RefreshServicesAsync(stoppingToken);
+                await _xenaDiscoveryServicesProvider.RefreshServicesAsync(stoppingToken);
             }
             finally
             {
