@@ -8,7 +8,7 @@ using Xena.Discovery.Models;
 using Xena.HttpClient.Factories;
 using Xena.HttpClient.Models;
 
-namespace Xena.HttpClient.Tests.Factories;
+namespace Xena.Tests.HttpClient;
 
 public class XenaHttpClientFactoryTests
 {

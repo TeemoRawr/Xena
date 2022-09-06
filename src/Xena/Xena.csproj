@@ -10,10 +10,26 @@
     <OutputType>Library</OutputType>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<IsPackable>true</IsPackable>
+	<Title>Xena</Title>
+	<Description>Xena is a framework for .NET that supports the developer in creating an ecosystem that will be built from microservices applications.</Description>
+	<PackageProjectUrl>https://github.com/TeemoRawr/Xena</PackageProjectUrl>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/TeemoRawr/Xena</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="HealthCheck\Configuration\" />
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Refit" Version="6.*" />
   </ItemGroup>
 
 </Project>

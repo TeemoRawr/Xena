@@ -1,9 +1,5 @@
 using Autofac.Extensions.DependencyInjection;
-using Xena.Discovery;
-using Xena.Discovery.Consul;
 using Xena.Discovery.Consul.Configuration;
-using Xena.Discovery.Memory;
-using Xena.Discovery.Models;
 using Xena.HealthCheck;
 using Xena.Startup;
 
@@ -17,10 +13,9 @@ applicationBuilder.Services.AddRazorPages();
     applicationBuilder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
         .BindConfiguration("Consul");
 
-var app = builder
+var app = await builder
     .AddHealthChecks()
-    .Build();
-
+    .BuildAsync();
 
 if (!app.Environment.IsDevelopment())
 {

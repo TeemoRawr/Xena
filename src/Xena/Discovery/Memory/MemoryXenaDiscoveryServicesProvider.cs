@@ -3,11 +3,11 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Memory;
 
-internal class MemoryXenaDiscoveryServicesService : IXenaDiscoveryServicesService
+internal class MemoryXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvider
 {
     private readonly List<Service> _services;
 
-    public MemoryXenaDiscoveryServicesService(IEnumerable<Service> services)
+    public MemoryXenaDiscoveryServicesProvider(IEnumerable<Service> services)
     {
         _services = services.ToList();
     }

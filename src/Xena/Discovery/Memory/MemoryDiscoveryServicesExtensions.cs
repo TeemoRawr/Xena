@@ -10,10 +10,10 @@ public static class MemoryDiscoveryServicesExtensions
 {
     public static IXenaDiscoveryServicesConfigurator AddMemoryProvider(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator, IEnumerable<Service> services)
     {
-        var memoryDiscoveryServicesService = new MemoryXenaDiscoveryServicesService(services);
+        var memoryDiscoveryServicesService = new MemoryXenaDiscoveryServicesProvider(services);
 
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton(_ => memoryDiscoveryServicesService);
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesService>(p => p.GetRequiredService<MemoryXenaDiscoveryServicesService>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesProvider>(p => p.GetRequiredService<MemoryXenaDiscoveryServicesProvider>());
 
         return xenaDiscoveryServicesConfigurator;
     }
