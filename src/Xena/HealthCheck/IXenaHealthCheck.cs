@@ -3,7 +3,7 @@
 namespace Xena.HealthCheck;
 
 /// <summary>
-/// Interface used internally by Xena framework which allows adding custom health check. All implementations of the interface are automatically discovered
+/// Interface used internally by Xena framework which allows adding custom health check.
 /// </summary>
 public interface IXenaHealthCheck
 {

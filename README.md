@@ -23,7 +23,7 @@ var applicationBuilder = builder.WebApplicationBuilder;
 applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 applicationBuilder.Services.AddRazorPages();
 
-var app = builder.Build();
+var app = await builder.BuildAsync();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -45,25 +45,27 @@ app.Run();
 
 # Extensions
 
-# Health Check
-Xena framework allow agregate all health checks in one which allow check simply general health of service.
+## Health Check
+Xena framework allows agregation of all health checks in one which allows checking general health of the service in a simple manner.
 
 ### Usage
-To add Helath check extensions you need execute method `AddHealthChecks` on Xena application builder.
+To add Helath check extensions you need to execute method `AddHealthChecks` in Xena application builder.
+
 ```
 var app = builder
     .AddHealthChecks()
     .Build();
 ```
 
-### Adding health check to service
-If you want to add your health check service you need implement `IXenaHealthCheck` and register it in DI. You can register many if you need one more one health check.
+### Adding health check to application
+If you want to add your health check service you need implement to `IXenaHealthCheck` and register it in DI. You can register many if you need more than one health check.
 ```
 applicationBuilder.Services.AddSingleton<IXenaHealthCheck, MyHealthCheck>();
 ```
 
 ### Automatic health check discovery
-Instead of registration all your health checks, you can enable auto discovery of all the services. To enable automatic health check discovery you need enable it in configuration of health check.
+Instead of registering all your health checks, you can enable auto discovery of all the services. To enable automatic health check discovery you need to enable it in configuration of health check.
+
 ```
 var app = builder
     .AddHealthChecks(configurator =>
@@ -74,10 +76,11 @@ var app = builder
 ```
 
 ## Discovery
-Discovery service allows application in easy way to retrieve information of the rest of other applications in ecosystem.
+Discovery service allows application to retrieve information about the other applications in ecosystem in an easy way.
 
 ### Usage
 To add Discovery extensions you need execute method `AddDiscoveryServicesService` on Xena application builder.
+
 ```
 var app = builder
     .AddDiscoveryServicesService(configurator =>
@@ -87,7 +90,7 @@ var app = builder
     .Build();
 ```
 ### Providers
-Default provider build in Xena package is memory provider, which allow set address of the services set manualy.
+Memory provider is default for Xena package and it allows setting the address of services manually
 
 ```
 builder.AddDiscoveryServicesService(configurator =>
@@ -108,6 +111,40 @@ builder.AddDiscoveryServicesService(configurator =>
 The other available providers are
 * Xena.Discovery.Consul
 * Xena.Discovery.EntityFramework
+
+## Readiness
+The Xena framework allows you to check whether the application is configured correctly by using readiness services.
+
+### Usage
+To add Readiness extensions you need execute method `AddReadiness` on Xena application builder.
+
+```
+var app = builder
+    .AddReadiness(configurator =>
+    {
+        // configuration here
+    })
+    .Build();
+```
+
+### Adding readiness service to application
+If you want to add your readiness service you need implement to `IXenaReadiness` and register it in DI. You can register many if you need more than one health check.
+```
+applicationBuilder.Services.AddSingleton<IXenaReadiness, MyReadiness>();
+```
+
+
+### Automatic readiness services discovery
+Instead of registering all your readiness service, you can enable auto discovery of all the services. To enable automatic readiness services discovery you need to enable it in configuration of readiness.
+
+```
+var app = builder
+    .AddReadiness(configurator =>
+    {
+        configurator.EnableAutoDiscoveryReadiness();
+    })
+    .Build();
+```
 
 # Contributing
 (TODO)
