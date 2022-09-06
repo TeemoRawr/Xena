@@ -14,7 +14,7 @@ internal class XenaDiscoveryServicesConfigurator : IXenaDiscoveryServicesConfigu
         _xenaWebApplicationBuilder = xenaWebApplicationBuilder;
     }
 
-    public IServiceCollection ServiceCollection => _xenaWebApplicationBuilder.WebApplicationBuilder.Services;
+    public IServiceCollection ServiceCollection => _xenaWebApplicationBuilder.Services;
 
     public IXenaDiscoveryServicesConfigurator AddHealthCheck()
     {

@@ -11,7 +11,7 @@ namespace Xena.HttpClient
             this IXenaWebApplicationBuilder webApplicationBuilder, 
             Action<IXenaHttpClientConfigurator> configurationAction)
         { 
-            webApplicationBuilder.WebApplicationBuilder.Services.AddTransient<XenaHttpClientFactory>();
+            webApplicationBuilder.Services.AddTransient<XenaHttpClientFactory>();
 
             var xenaHttpClientConfigurator = new XenaHttpClientConfigurator(webApplicationBuilder);
             configurationAction(xenaHttpClientConfigurator);

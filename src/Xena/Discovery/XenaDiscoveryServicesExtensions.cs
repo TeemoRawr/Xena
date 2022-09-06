@@ -23,10 +23,10 @@ public static class XenaDiscoveryServicesExtensions
         XenaDiscoveryOptions options, 
         Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
     {
-        webApplicationBuilder.WebApplicationBuilder.Services.AddHostedService<XenaDiscoverBackgroundService>();
+        webApplicationBuilder.Services.AddHostedService<XenaDiscoverBackgroundService>();
 
         var wrappedOptions = Options.Create(options);
-        webApplicationBuilder.WebApplicationBuilder.Services.AddSingleton(_ => wrappedOptions);
+        webApplicationBuilder.Services.AddSingleton(_ => wrappedOptions);
 
         var configurator = new XenaDiscoveryServicesConfigurator(webApplicationBuilder);
 

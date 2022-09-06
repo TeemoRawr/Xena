@@ -1,17 +1,21 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace Xena.Startup;
 
-namespace Xena.Startup;
-
-[ExcludeFromCodeCoverage]
 internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
 {
-    public WebApplicationBuilder WebApplicationBuilder { get; }
+    private readonly WebApplicationBuilder _webApplicationBuilder;
     private readonly IList<Func<WebApplication, Task>> _postBuildActions = new List<Func<WebApplication, Task>>();
 
     public XenaWebApplicationBuilder(WebApplicationBuilder webApplicationBuilder)
     {
-        WebApplicationBuilder = webApplicationBuilder;
+        _webApplicationBuilder = webApplicationBuilder;
     }
+
+    public IWebHostEnvironment Environment => _webApplicationBuilder.Environment;
+    public IServiceCollection Services => _webApplicationBuilder.Services;
+    public ConfigurationManager Configuration => _webApplicationBuilder.Configuration;
+    public ILoggingBuilder Logging => _webApplicationBuilder.Logging;
+    public ConfigureWebHostBuilder WebHost => _webApplicationBuilder.WebHost;
+    public ConfigureHostBuilder Host => _webApplicationBuilder.Host;
 
     public IXenaWebApplicationBuilder AddPostBuildAction(Action<WebApplication> action)
     {
@@ -32,7 +36,7 @@ internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
 
     public async Task<XenaWebApplication> BuildAsync()
     {
-        var webApplication = WebApplicationBuilder.Build();
+        var webApplication = _webApplicationBuilder.Build();
 
         foreach (var postBuildAction in _postBuildActions)
         {

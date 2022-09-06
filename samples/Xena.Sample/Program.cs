@@ -6,12 +6,10 @@ using Xena.Startup;
 
 var builder = XenaFactory.Build(args);
 
-var applicationBuilder = builder.WebApplicationBuilder;
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Services.AddRazorPages();
 
-applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-applicationBuilder.Services.AddRazorPages();
-
-    applicationBuilder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
+builder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
         .BindConfiguration("Consul");
 
 var app = await builder

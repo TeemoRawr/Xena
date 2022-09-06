@@ -17,7 +17,7 @@ internal class XenaHttpClientConfigurator : IXenaHttpClientConfigurator
 
     public IXenaHttpClientConfigurator AddHttpClient<THttpClient>() where THttpClient : IXenaHttpClient
     {
-        _xenaWebApplicationBuilder.WebApplicationBuilder.Services.AddScoped(provider =>
+        _xenaWebApplicationBuilder.Services.AddScoped(provider =>
         {
             var xenaHttpClientFactory = provider.GetRequiredService<XenaHttpClientFactory>();
 

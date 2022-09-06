@@ -22,7 +22,7 @@ internal class XenaReadinessConfigurator : IXenaReadinessConfigurator
 
         foreach (var xenaReadinessType in xenaReadinessTypes)
         {
-            _xenaWebApplicationBuilder.WebApplicationBuilder.Services.AddScoped(
+            _xenaWebApplicationBuilder.Services.AddScoped(
                 typeof(IXenaReadiness),
                 xenaReadinessType);
         }

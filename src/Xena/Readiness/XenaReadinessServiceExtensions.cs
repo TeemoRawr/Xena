@@ -12,7 +12,7 @@ public static class XenaReadinessServiceExtensions
         var xenaReadinessConfiguration = new XenaReadinessConfigurator(webApplicationBuilder);
         configurationAction?.Invoke(xenaReadinessConfiguration);
 
-        webApplicationBuilder.WebApplicationBuilder.Services.AddTransient<XenaReadinessService>();
+        webApplicationBuilder.Services.AddTransient<XenaReadinessService>();
 
         webApplicationBuilder.AddPostBuildAsyncAction(async p =>
         {

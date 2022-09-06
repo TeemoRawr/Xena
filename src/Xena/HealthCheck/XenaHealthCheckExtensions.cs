@@ -17,7 +17,7 @@ public static class XenaHealthCheckExtensions
         var healthCheckConfigurator = new XenaHealthCheckConfigurator(webApplicationBuilder);
         configurationAction?.Invoke(healthCheckConfigurator);
 
-        webApplicationBuilder.WebApplicationBuilder.Services.AddHealthChecks()
+        webApplicationBuilder.Services.AddHealthChecks()
             .AddCheck<XenaHealthCheck>("Xena Health CheckAsync", tags: new[] { "xena-health-check" });
 
         webApplicationBuilder.AddPostBuildAction(application =>
