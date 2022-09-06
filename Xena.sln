@@ -19,10 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena.Discovery.Consul.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena.Discovery.EntityFramework", "src\Xena.Discovery.EntityFramework\Xena.Discovery.EntityFramework.csproj", "{5F2D4AA4-C1C8-4DB0-BDF6-8B11AC5D2069}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xena.HttpClient", "src\Xena.HttpClient\Xena.HttpClient.csproj", "{0232D505-72FD-40C8-ACF9-757A4FECBBA2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xena.HttpClient.Tests", "tests\Xena.HttpClient.Tests\Xena.HttpClient.Tests.csproj", "{631CFD71-08E2-4C78-BF01-D059F58766FC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,14 +49,6 @@ Global
 		{5F2D4AA4-C1C8-4DB0-BDF6-8B11AC5D2069}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F2D4AA4-C1C8-4DB0-BDF6-8B11AC5D2069}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F2D4AA4-C1C8-4DB0-BDF6-8B11AC5D2069}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0232D505-72FD-40C8-ACF9-757A4FECBBA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0232D505-72FD-40C8-ACF9-757A4FECBBA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0232D505-72FD-40C8-ACF9-757A4FECBBA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0232D505-72FD-40C8-ACF9-757A4FECBBA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{631CFD71-08E2-4C78-BF01-D059F58766FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{631CFD71-08E2-4C78-BF01-D059F58766FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{631CFD71-08E2-4C78-BF01-D059F58766FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{631CFD71-08E2-4C78-BF01-D059F58766FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,8 +58,6 @@ Global
 		{B9C7898D-1156-4F3A-A6C4-79834C4E113A} = {9500C5D2-39CB-4714-AE5B-85D72C2E8A64}
 		{C5AF5A4E-01A1-4622-B2DA-CF613097C61C} = {9500C5D2-39CB-4714-AE5B-85D72C2E8A64}
 		{5F2D4AA4-C1C8-4DB0-BDF6-8B11AC5D2069} = {ACAB26BA-3664-48CE-900A-D72CE262DC2A}
-		{0232D505-72FD-40C8-ACF9-757A4FECBBA2} = {ACAB26BA-3664-48CE-900A-D72CE262DC2A}
-		{631CFD71-08E2-4C78-BF01-D059F58766FC} = {9500C5D2-39CB-4714-AE5B-85D72C2E8A64}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9A5683F-88A5-41D9-B6D9-22EC01561FCB}

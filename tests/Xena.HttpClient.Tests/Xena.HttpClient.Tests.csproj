@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xena.HttpClient\Xena.HttpClient.csproj" />
+    <ProjectReference Include="..\..\src\Xena\Xena.csproj" />
   </ItemGroup>
 
 </Project>

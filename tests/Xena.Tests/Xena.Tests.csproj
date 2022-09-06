@@ -25,11 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Discovery\" />
-    <Folder Include="Readiness\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Xena\Xena.csproj" />
   </ItemGroup>
 
