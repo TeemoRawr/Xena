@@ -1,6 +1,6 @@
 ﻿using Xena.HealthCheck;
 using Xena.Readiness.Interfaces;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Readiness.Configurator;
 

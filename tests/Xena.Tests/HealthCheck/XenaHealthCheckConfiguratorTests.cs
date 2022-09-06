@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xena.HealthCheck;
 using Xena.HealthCheck.Configuration;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Tests.HealthCheck;
 

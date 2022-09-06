@@ -1,4 +1,4 @@
-﻿using Xena.Startup;
+﻿using Xena.Startup.Interfaces;
 
 namespace Xena.HealthCheck.Configuration;
 

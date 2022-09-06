@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Xena.Discovery.Configuration;
 using Xena.Discovery.Models;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Discovery;
 

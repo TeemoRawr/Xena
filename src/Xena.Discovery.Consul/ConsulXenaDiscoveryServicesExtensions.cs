@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xena.Discovery.Configuration;
 using Xena.Discovery.Interfaces;
 
 namespace Xena.Discovery.Consul;
 
-[ExcludeFromCodeCoverage]
 public static class ConsulXenaDiscoveryServicesExtensions
 {
     public static IXenaDiscoveryServicesConfigurator AddConsulProvider(this IXenaDiscoveryServicesConfigurator xenaDiscoveryServicesConfigurator)

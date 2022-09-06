@@ -2,11 +2,11 @@
 
 namespace Xena.HealthCheck;
 
-public class XenaHealthCheck : IHealthCheck
+public class XenaHealthCheckService : IHealthCheck
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public XenaHealthCheck(IServiceScopeFactory serviceScopeFactory)
+    public XenaHealthCheckService(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
     }

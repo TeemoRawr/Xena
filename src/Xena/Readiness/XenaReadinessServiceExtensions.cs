@@ -1,5 +1,5 @@
 ﻿using Xena.Readiness.Configurator;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Readiness;
 

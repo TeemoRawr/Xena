@@ -2,7 +2,7 @@
 using Xena.Discovery.Interfaces;
 using Xena.HttpClient.Factories;
 using Xena.HttpClient.Models;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.HttpClient.Configuration;
 

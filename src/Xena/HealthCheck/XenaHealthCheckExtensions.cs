@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Xena.HealthCheck.Configuration;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.HealthCheck;
 
@@ -18,7 +18,7 @@ public static class XenaHealthCheckExtensions
         configurationAction?.Invoke(healthCheckConfigurator);
 
         webApplicationBuilder.Services.AddHealthChecks()
-            .AddCheck<XenaHealthCheck>("Xena Health CheckAsync", tags: new[] { "xena-health-check" });
+            .AddCheck<XenaHealthCheckService>("Xena Health CheckAsync", tags: new[] { "xena-health-check" });
 
         webApplicationBuilder.AddPostBuildAction(application =>
         {

@@ -20,7 +20,7 @@ public class XenaHealthCheckTests
         var serviceScopeFactory = serviceProvider!.GetRequiredService<IServiceScopeFactory>();
 
         var healthCheckContext = new HealthCheckContext();
-        var sut = new XenaHealthCheck(serviceScopeFactory);
+        var sut = new XenaHealthCheckService(serviceScopeFactory);
 
         // act
         var result = await sut.CheckHealthAsync(healthCheckContext, CancellationToken.None);
@@ -46,7 +46,7 @@ public class XenaHealthCheckTests
         var serviceScopeFactory = serviceProvider!.GetRequiredService<IServiceScopeFactory>();
 
         var healthCheckContext = new HealthCheckContext();
-        var sut = new XenaHealthCheck(serviceScopeFactory);
+        var sut = new XenaHealthCheckService(serviceScopeFactory);
 
         // act
         var result = await sut.CheckHealthAsync(healthCheckContext, CancellationToken.None);
@@ -80,7 +80,7 @@ public class XenaHealthCheckTests
         var serviceScopeFactory = serviceProvider!.GetRequiredService<IServiceScopeFactory>();
 
         var healthCheckContext = new HealthCheckContext();
-        var sut = new XenaHealthCheck(serviceScopeFactory);
+        var sut = new XenaHealthCheckService(serviceScopeFactory);
 
         // act
         var result = await sut.CheckHealthAsync(healthCheckContext, CancellationToken.None);

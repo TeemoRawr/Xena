@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Xena.HttpClient.Configuration;
 using Xena.HttpClient.Factories;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.HttpClient
 {

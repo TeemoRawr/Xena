@@ -1,4 +1,4 @@
-﻿namespace Xena.Startup;
+﻿namespace Xena.Startup.Interfaces;
 
 public interface IXenaWebApplicationBuilder
 {
@@ -43,7 +43,7 @@ public interface IXenaWebApplicationBuilder
     /// <returns>
     /// Allows fluent usage by returning the same builder
     /// </returns>
-    IXenaWebApplicationBuilder AddPostBuildAction(Action<WebApplication> action);
+    IXenaWebApplicationBuilder AddPostBuildAction(Action<IXenaWebApplication> action);
 
     /// <summary>
     /// Method which allow to add async action when the application will be builded. E.g you can use to invoke some service after build
@@ -54,13 +54,13 @@ public interface IXenaWebApplicationBuilder
     /// <returns>
     /// Allows fluent usage by returning the same builder
     /// </returns>
-    IXenaWebApplicationBuilder AddPostBuildAsyncAction(Func<WebApplication, Task> action);
+    IXenaWebApplicationBuilder AddPostBuildAsyncAction(Func<IXenaWebApplication, Task> action);
 
     /// <summary>
     /// BuildAsync application
     /// </summary>
     /// <returns>
-    /// Returns <see cref="XenaWebApplication"/>
+    /// Returns <see cref="IXenaWebApplication"/>
     /// </returns>
-    Task<XenaWebApplication> BuildAsync();
+    Task<IXenaWebApplication> BuildAsync();
 }
