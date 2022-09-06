@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Discovery\" />
+    <Folder Include="Readiness\" />
   </ItemGroup>
 
   <ItemGroup>
