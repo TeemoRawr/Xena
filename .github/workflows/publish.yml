@@ -9,16 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Setup dotnet
-      #   uses: actions/setup-dotnet@v1
-      #   with:
-      #     dotnet-version: 3.1.200
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x
 
       # Publish
-      - name: publish on version change - Xena.Core
-        id: publish_nuget
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: src/Xena/Xena.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: Build Xena soltion
+        run: dotnet build Xena.sln
+        
+      - name: Publish NuGet packages to NuGet.org
+        run: dotnet nuget push src/**/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
