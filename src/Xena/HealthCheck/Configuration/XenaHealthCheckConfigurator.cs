@@ -15,7 +15,7 @@ internal class XenaHealthCheckConfigurator : IXenaHealthCheckConfigurator
     {
         var xenaHealthCheckTypes = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(p => p.GetTypes())
-            .Where(t => typeof(IXenaHealthCheck).IsAssignableTo(t))
+            .Where(t => t.IsClass && t.IsAssignableTo(typeof(IXenaHealthCheck)))
             .ToList();
 
         foreach (var xenaHealthCheckType in xenaHealthCheckTypes)

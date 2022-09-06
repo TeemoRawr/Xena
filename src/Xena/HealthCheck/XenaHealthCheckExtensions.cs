@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Xena.HealthCheck.Configuration;
 using Xena.Startup;
@@ -28,7 +29,18 @@ public static class XenaHealthCheckExtensions
                 {
                     context.Response.ContentType = "application/json; charset=utf-8";
 
-                    var options = new JsonWriterOptions { Indented = true };
+                    var options = new JsonWriterOptions
+                    {
+                        Indented = true
+                    };
+
+                    var jsonSerializerOptions = new JsonSerializerOptions
+                    {
+                        Converters =
+                        {
+                            new JsonStringEnumConverter()
+                        }
+                    };
 
                     using var memoryStream = new MemoryStream();
                     await using (var jsonWriter = new Utf8JsonWriter(memoryStream, options))
@@ -48,7 +60,7 @@ public static class XenaHealthCheckExtensions
                             {
                                 jsonWriter.WritePropertyName(item.Key);
 
-                                JsonSerializer.Serialize(jsonWriter, item.Value, item.Value?.GetType() ?? typeof(object));
+                                JsonSerializer.Serialize(jsonWriter, item.Value, item.Value?.GetType() ?? typeof(object), jsonSerializerOptions);
                             }
 
                             jsonWriter.WriteEndObject();

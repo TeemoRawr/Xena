@@ -1,6 +1,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Xena.Discovery.Consul.Configuration;
 using Xena.HealthCheck;
+using Xena.Readiness;
 using Xena.Startup;
 
 var builder = XenaFactory.Build(args);
@@ -14,7 +15,8 @@ applicationBuilder.Services.AddRazorPages();
         .BindConfiguration("Consul");
 
 var app = await builder
-    .AddHealthChecks()
+    .AddReadiness(p => p.EnableAutoDiscoveryReadiness())
+    .AddHealthChecks(p => p.EnableAutoDiscoveryHealthChecks())
     .BuildAsync();
 
 if (!app.Environment.IsDevelopment())

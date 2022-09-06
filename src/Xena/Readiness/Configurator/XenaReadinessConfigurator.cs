@@ -17,14 +17,14 @@ internal class XenaReadinessConfigurator : IXenaReadinessConfigurator
     {
         var xenaReadinessTypes = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(p => p.GetTypes())
-            .Where(t => typeof(IXenaReadiness).IsAssignableTo(t))
+            .Where(t => t.IsClass && t.IsAssignableTo(typeof(IXenaReadiness)))
             .ToList();
 
-        foreach (var xenaHealthCheckType in xenaReadinessTypes)
+        foreach (var xenaReadinessType in xenaReadinessTypes)
         {
             _xenaWebApplicationBuilder.WebApplicationBuilder.Services.AddScoped(
-                typeof(IXenaHealthCheck),
-                xenaHealthCheckType);
+                typeof(IXenaReadiness),
+                xenaReadinessType);
         }
 
         return this;
