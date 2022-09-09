@@ -32,7 +32,7 @@ public class XenaHttpClientFactoryTests
 
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
-        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
+        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(services);
 
@@ -56,7 +56,7 @@ public class XenaHttpClientFactoryTests
             .CreateMany()
             .ToList();
 
-        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
+        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(services);
 
@@ -74,7 +74,7 @@ public class XenaHttpClientFactoryTests
     public async Task CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
     {
         // arrange
-        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
+        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
         xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
             .ReturnsAsync(Enumerable.Empty<Service>().ToList());
 
@@ -97,7 +97,7 @@ public class XenaHttpClientFactoryTests
         // act and assert
         var exception = Assert.Throws<NullReferenceException>(() => new XenaHttpClientFactory(null, loggerMock.Object));
         exception.Message.Should()
-            .Be($"Interface {nameof(IXenaDiscoveryServicesProvider)} is not registered. " +
+            .Be($"Interface {nameof(IXenaDiscoveryProvider)} is not registered. " +
                 "Please add Discovery module to application");
     }
 }

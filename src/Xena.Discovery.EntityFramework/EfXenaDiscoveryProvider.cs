@@ -5,11 +5,11 @@ using Xena.Discovery.Models;
 
 namespace Xena.Discovery.EntityFramework;
 
-internal class EfXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvider
+internal class EfXenaDiscoveryProvider : IXenaDiscoveryProvider
 {
     private readonly DiscoveryContext _context;
 
-    public EfXenaDiscoveryServicesProvider(DiscoveryContext context)
+    public EfXenaDiscoveryProvider(DiscoveryContext context)
     {
         _context = context;
     }
@@ -18,11 +18,6 @@ internal class EfXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvider
     {
         _context.Services.Add(service);
         await _context.SaveChangesAsync();
-    }
-
-    public Task AddServiceTagAsync(params string[] tags)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Service?> GetServiceAsync(string id)

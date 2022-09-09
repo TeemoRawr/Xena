@@ -9,7 +9,7 @@ namespace Xena.Tests.Discovery;
 
 public class DiscoverBackgroundServiceTests
 {
-    private Mock<IXenaDiscoveryServicesProvider> _discoveryServicesServiceMock = null!;
+    private Mock<IXenaDiscoveryProvider> _discoveryServicesServiceMock = null!;
     private readonly IFixture _fixture = new Fixture();
     
     [Fact]
@@ -30,7 +30,7 @@ public class DiscoverBackgroundServiceTests
 
     private XenaDiscoverBackgroundService CreateSut()
     {
-        _discoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
+        _discoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
 
         var xenaDiscoveryOptions = new XenaDiscoveryOptions();
         var wrappedOptions = Options.Create(xenaDiscoveryOptions);

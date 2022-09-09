@@ -23,8 +23,8 @@ public static class EfDiscoveryServicesExtensions
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddTransient(_ => dbContextOptions);
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddTransient<DiscoveryContext>();
 
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<EfXenaDiscoveryServicesProvider>();
-        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryServicesProvider>(p => p.GetRequiredService<EfXenaDiscoveryServicesProvider>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<EfXenaDiscoveryProvider>();
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryProvider>(p => p.GetRequiredService<EfXenaDiscoveryProvider>());
         
         return xenaDiscoveryServicesConfigurator;
     }

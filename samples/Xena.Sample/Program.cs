@@ -1,4 +1,6 @@
 using Autofac.Extensions.DependencyInjection;
+using Xena.Discovery;
+using Xena.Discovery.Consul;
 using Xena.Discovery.Consul.Configuration;
 using Xena.HealthCheck;
 using Xena.Readiness;
@@ -15,6 +17,10 @@ builder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
 var app = await builder
     .AddReadiness(p => p.EnableAutoDiscoveryReadiness())
     .AddHealthChecks(p => p.EnableAutoDiscoveryHealthChecks())
+    .AddDiscovery(configurator =>
+    {
+        configurator.AddConsulProvider();
+    })
     .BuildAsync();
 
 if (!app.Environment.IsDevelopment())

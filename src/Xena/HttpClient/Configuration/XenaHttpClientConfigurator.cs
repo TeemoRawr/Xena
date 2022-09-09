@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Xena.Discovery.Interfaces;
-using Xena.HttpClient.Factories;
+﻿using Xena.HttpClient.Factories;
 using Xena.HttpClient.Models;
 using Xena.Startup.Interfaces;
 
@@ -22,15 +20,6 @@ internal class XenaHttpClientConfigurator : IXenaHttpClientConfigurator
             var xenaHttpClientFactory = provider.GetRequiredService<XenaHttpClientFactory>();
 
             return xenaHttpClientFactory.CreateHttpClient<THttpClient>();
-        });
-
-        _xenaWebApplicationBuilder.AddPostBuildAsyncAction(async application =>
-        {
-            var httpClientName = typeof(THttpClient).FullName;
-
-            var discoveryServicesService = application.Services.GetRequiredService<IXenaDiscoveryServicesProvider>();
-
-            await discoveryServicesService.AddServiceTagAsync(httpClientName!);
         });
 
         return this;
