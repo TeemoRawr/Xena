@@ -4,7 +4,6 @@ using Xena.Startup.Interfaces;
 
 namespace Xena.Discovery.Configuration;
 
-[ExcludeFromCodeCoverage]
 internal class XenaDiscoveryServicesConfigurator : IXenaDiscoveryServicesConfigurator
 {
     private readonly IXenaWebApplicationBuilder _xenaWebApplicationBuilder;
