@@ -10,11 +10,11 @@ internal class XenaReadinessService
     private readonly ILogger<XenaReadinessService> _logger;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly IOptions<XenaReadinessOptions> _xenaReadinessConfiguration;
-    
+
     public XenaReadinessService(
-        IServiceScopeFactory serviceScopeFactory, 
-        ILogger<XenaReadinessService> logger, 
-        IHostApplicationLifetime hostApplicationLifetime, 
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<XenaReadinessService> logger,
+        IHostApplicationLifetime hostApplicationLifetime,
         IOptions<XenaReadinessOptions> xenaReadinessConfiguration)
     {
         _serviceScopeFactory = serviceScopeFactory;
@@ -35,29 +35,32 @@ internal class XenaReadinessService
         {
             var status = await xenaReadiness.CheckAsync(serviceScope.ServiceProvider);
 
-            if (status == XenaReadinessStatus.Successful)
+            switch (status)
             {
-                var behaviorOnSuccessful = xenaReadinessConfiguration.BehaviorOnSuccessful;
-                ExecuteBehavior(xenaReadiness, behaviorOnSuccessful, XenaReadinessStatus.Successful);
-                continue;
+                case XenaReadinessStatus.Successful:
+                    {
+                        ExecuteBehavior(xenaReadiness, xenaReadinessConfiguration.BehaviorOnSuccessful, status);
+                        break;
+                    }
+                case XenaReadinessStatus.Warning:
+                    {
+                        ExecuteBehavior(xenaReadiness, xenaReadinessConfiguration.BehaviorOnWarning, status);
+                        break;
+                    }
+                case XenaReadinessStatus.Error:
+                    {
+                        ExecuteBehavior(xenaReadiness, xenaReadinessConfiguration.BehaviorOnError, status);
+                        break;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status));
             }
-
-            if (status == XenaReadinessStatus.Warning)
-            {
-                var behaviorOnWarning = xenaReadinessConfiguration.BehaviorOnWarning;
-                ExecuteBehavior(xenaReadiness, behaviorOnWarning, XenaReadinessStatus.Warning);
-                continue;
-            }
-
-            if (status == XenaReadinessStatus.Error)
-            {
-                var behaviorOnError = xenaReadinessConfiguration.BehaviorOnError;
-                ExecuteBehavior(xenaReadiness, behaviorOnError, XenaReadinessStatus.Error);
-                continue;
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(status));
         }
+    }
+
+    public static IEnumerable<XenaReadinessBehavior> GetFlags(XenaReadinessBehavior e)
+    {
+        return Enum.GetValues(e.GetType()).Cast<Enum>().Where(e.HasFlag).Select(en => (XenaReadinessBehavior)en);
     }
 
     private void ExecuteBehavior(IXenaReadiness xenaReadiness, XenaReadinessBehavior behavior, XenaReadinessStatus status)
@@ -65,35 +68,32 @@ internal class XenaReadinessService
         var serviceName = xenaReadiness.GetType().FullName;
         var message = $"{serviceName} return {status} status";
 
-        if (behavior == XenaReadinessBehavior.Nothing)
-        {
-            return;
-        }
+        var flags = GetFlags(behavior);
 
-        if (behavior.HasFlag(XenaReadinessBehavior.LogInformation))
+        foreach (var flag in flags)
         {
-            _logger.LogInformation(message);
-        }
-
-        if (behavior.HasFlag(XenaReadinessBehavior.LogWarning))
-        {
-            _logger.LogWarning(message);
-        }
-
-        if (behavior.HasFlag(XenaReadinessBehavior.LogError))
-        {
-            _logger.LogError(message);
-        }
-
-        if (behavior.HasFlag(XenaReadinessBehavior.LogCritical))
-        {
-            _logger.LogCritical(message);
-        }
-
-        if (behavior.HasFlag(XenaReadinessBehavior.TerminateApplication))
-        {
-            _logger.LogCritical($"Application is going to terminate cause readiness {serviceName} throw status {status}");
-            _hostApplicationLifetime.StopApplication();
+            switch (flag)
+            {
+                case XenaReadinessBehavior.LogInformation:
+                    _logger.LogInformation(message);
+                    break;
+                case XenaReadinessBehavior.LogWarning:
+                    _logger.LogWarning(message);
+                    break;
+                case XenaReadinessBehavior.LogError:
+                    _logger.LogError(message);
+                    break;
+                case XenaReadinessBehavior.LogCritical:
+                    _logger.LogCritical(message);
+                    break;
+                case XenaReadinessBehavior.TerminateApplication:
+                    _logger.LogCritical($"Application is going to terminate cause readiness {serviceName} throw status {status}");
+                    _hostApplicationLifetime.StopApplication();
+                    break;
+                case XenaReadinessBehavior.Nothing:
+                default:
+                    continue;
+            }
         }
     }
 }
