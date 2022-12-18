@@ -2,7 +2,7 @@
 
 public interface IXenaMemoryBus
 {
-    Task Send(IXenaCommand command);
+    Task Send<TCommand>(TCommand command) where TCommand : IXenaCommand;
     Task<TResult> Query<TResult>(IXenaQuery<TResult> query);
-    Task Publish(IXenaEvent @event);
+    Task Publish<TEvent>(TEvent @event) where TEvent : IXenaEvent;
 }

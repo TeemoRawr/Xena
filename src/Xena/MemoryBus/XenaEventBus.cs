@@ -13,9 +13,14 @@ internal class XenaEventBus
 
     public async Task Publish<TEvent>(TEvent @event) where TEvent : IXenaEvent
     {
-        var eventHandlers = _serviceProvider.GetServices<IXenaEventHandler<TEvent>>();
+        var eventType = @event.GetType();
+        var eventHandlerType = typeof(IXenaEventHandler<>).MakeGenericType(eventType);
+        
+        var eventHandlers = _serviceProvider.GetServices(eventHandlerType);
 
-        var eventTasks = eventHandlers.Select(h => h.Handle(@event));
+        var eventTasks = eventHandlers
+            .Cast<IXenaEventHandler<TEvent>>()
+            .Select(h => h.Handle(@event));
 
         await Task.WhenAll(eventTasks);
     }

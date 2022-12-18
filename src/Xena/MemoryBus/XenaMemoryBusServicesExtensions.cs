@@ -5,7 +5,7 @@ namespace Xena.MemoryBus;
 
 public static class XenaMemoryBusServicesExtensions
 {
-    public static IXenaWebApplicationBuilder AddMemoryBus(IXenaWebApplicationBuilder builder)
+    public static IXenaWebApplicationBuilder AddMemoryBus(this IXenaWebApplicationBuilder builder)
     {
         builder.Services.AddTransient<XenaCommandBus>();
         builder.Services.AddTransient<XenaQueryBus>();
