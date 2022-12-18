@@ -18,12 +18,12 @@ internal class XenaMemoryBus : IXenaMemoryBus
         _eventBus = eventBus;
     }
 
-    public async Task Publish(IXenaEvent @event)
+    public async Task Publish<TEvent>(TEvent @event) where TEvent : IXenaEvent
     {
         await _eventBus.Publish(@event);
     }
 
-    public async Task Send(IXenaCommand command)
+    public async Task Send<TCommand>(TCommand command) where TCommand : IXenaCommand
     {
         await _commandBus.Send(command);
     }
