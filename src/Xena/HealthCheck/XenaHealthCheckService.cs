@@ -2,16 +2,16 @@
 
 namespace Xena.HealthCheck;
 
-public class XenaHealthCheck : IHealthCheck
+public class XenaHealthCheckService : IHealthCheck
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public XenaHealthCheck(IServiceScopeFactory serviceScopeFactory)
+    public XenaHealthCheckService(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
 

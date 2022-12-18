@@ -2,24 +2,32 @@
 using Consul;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Xena.Discovery.Consul.Configuration;
-using Xena.Discovery.Interfaces;
 using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Consul;
 
-internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvider, IDisposable
+internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
 {
-    private IConsulClient? _consulClient;
+    private bool _isInitialized;
     private readonly IServer _serverAddressesFeature;
     private readonly IOptions<ConsulXenaDiscoveryServicesConfiguration> _consulOptions;
-    private readonly List<Service> _services = new ();
+    private readonly List<Service> _services = new();
+    private readonly ILogger<ConsulXenaDiscoveryProvider> _logger;
+    private readonly IConsulClient _consulClient;
 
-    public ConsulXenaDiscoveryServicesProvider(IServer serverAddressesFeature, IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions)
+    public ConsulXenaDiscoveryProvider(
+        IServer serverAddressesFeature,
+        IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions,
+        ILogger<ConsulXenaDiscoveryProvider> logger,
+        IConsulClient consulClient)
     {
         _serverAddressesFeature = serverAddressesFeature;
         _consulOptions = consulOptions;
+        _logger = logger;
+        _consulClient = consulClient;
     }
 
     public Task DeactivateAsync()
@@ -33,40 +41,6 @@ internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvi
     {
         _services.Add(service);
         return Task.CompletedTask;
-    }
-
-    public async Task AddServiceTagAsync(params string[] tags)
-    {
-        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
-
-        var selfService = _services.Single(s => s.Id == consulDiscoveryServicesConfiguration.Id);
-
-        selfService.AddTags(tags);
-
-        var addresses = _serverAddressesFeature.Features.Get<IServerAddressesFeature>();
-
-        if (addresses is null)
-        {
-            throw new NullReferenceException();
-        }
-
-        var preferredAddress = addresses.Addresses.First();
-
-        var uri = new Uri(preferredAddress);
-
-        var serviceRegister = await _consulClient!.Agent.ServiceRegister(new AgentServiceRegistration
-        {
-            ID = consulDiscoveryServicesConfiguration.Id,
-            Name = consulDiscoveryServicesConfiguration.Name,
-            Address = $"{uri.Scheme}://{uri.Host}",
-            Port = uri.Port,
-            Tags = new[] { consulDiscoveryServicesConfiguration.Name },
-        });
-
-        if (serviceRegister.StatusCode != HttpStatusCode.OK)
-        {
-            throw new Exception("Error occurred while updating service in Consul");
-        }
     }
 
     public Task<Service?> GetServiceAsync(string id)
@@ -83,18 +57,26 @@ internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvi
 
     public async Task RefreshServicesAsync(CancellationToken stoppingToken)
     {
+        if (!_isInitialized)
+        {
+            _logger.LogInformation("Consul is not initialized yet");
+            return;
+        }
+
+        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
+
+        await _consulClient!.Agent.PassTTL(consulDiscoveryServicesConfiguration.Id, "Ok", stoppingToken);
+
         var servicesResponse = await _consulClient!.Agent.Services(stoppingToken);
         var servicesFromConsul = servicesResponse.Response.Values;
-        var services = servicesFromConsul.Select(s =>
-        {
-            return new Service
-            {
-                Id = s.ID,
-                Name = s.ID,
-                Address = s.Address,
-                Port = s.Port
-            };
-        }).ToList();
+        var services = servicesFromConsul
+            .Select(s => new Service(
+                s.ID,
+                s.ID,
+                s.Address,
+                s.Port,
+                s.Tags.ToList()))
+            .ToList();
 
         _services.Clear();
         _services.AddRange(services);
@@ -109,30 +91,24 @@ internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvi
     {
         var addresses = _serverAddressesFeature.Features.Get<IServerAddressesFeature>();
 
-        if (addresses is null)
+        if (addresses is null || !addresses.Addresses.Any())
         {
-            throw new NullReferenceException();
+            throw new InvalidOperationException("Cannot find binded addresses to server");
         }
-
-        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
-
-        _consulClient = new ConsulClient(configuration =>
-        {
-            configuration.Address = new Uri(consulDiscoveryServicesConfiguration.Host);
-        });
 
         var preferredAddress = addresses.Addresses.First();
 
         var uri = new Uri(preferredAddress);
+        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
 
-        var checkRegister = await _consulClient.Agent.CheckRegister(new AgentCheckRegistration
-        {
-            ID = consulDiscoveryServicesConfiguration.Id,
-            Name = consulDiscoveryServicesConfiguration.Name,
-            TTL = TimeSpan.FromSeconds(10)
-        });
+#if DEBUG
+        await _consulClient.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
+#endif
 
-        if (checkRegister.StatusCode != HttpStatusCode.NotFound)
+        var checkRegister = await
+            _consulClient.Health.Service(consulDiscoveryServicesConfiguration.Id);
+
+        if (checkRegister.Response.Any())
         {
             throw new Exception(
                 $"Service with name {consulDiscoveryServicesConfiguration.Name} exists in Consul. Please check name of application");
@@ -142,9 +118,9 @@ internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvi
         {
             ID = consulDiscoveryServicesConfiguration.Id,
             Name = consulDiscoveryServicesConfiguration.Name,
-            Address = $"{uri.Scheme}://{uri.Host}",
+            Address = $"{uri.Scheme}://{uri.Host}:{uri.Port}",
             Port = uri.Port,
-            Tags = new[] { consulDiscoveryServicesConfiguration.Name },
+            Tags = new[] { consulDiscoveryServicesConfiguration.Name }
         });
 
         if (serviceRegister.StatusCode != HttpStatusCode.OK)
@@ -152,5 +128,7 @@ internal class ConsulXenaDiscoveryServicesProvider : IXenaDiscoveryServicesProvi
             throw new Exception(
                 $"Error occurred while register service with name {consulDiscoveryServicesConfiguration.Name} exists in Consul.");
         }
+
+        _isInitialized = true;
     }
 }

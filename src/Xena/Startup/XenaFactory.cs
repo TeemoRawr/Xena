@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Startup;
 

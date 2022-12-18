@@ -6,14 +6,17 @@ namespace Xena.Discovery;
 
 internal class XenaDiscoverBackgroundService : BackgroundService
 {
-    private readonly IXenaDiscoveryServicesProvider _xenaDiscoveryServicesProvider;
+    private readonly IXenaDiscoveryProvider _xenaDiscoveryProvider;
     private readonly IOptions<XenaDiscoveryOptions> _xenaDiscoveryOptions;
 
     public XenaDiscoverBackgroundService(
-        IXenaDiscoveryServicesProvider xenaDiscoveryServicesProvider,
+        IXenaDiscoveryProvider? xenaDiscoveryProvider,
         IOptions<XenaDiscoveryOptions> xenaDiscoveryOptions)
     {
-        _xenaDiscoveryServicesProvider = xenaDiscoveryServicesProvider;
+        _xenaDiscoveryProvider = xenaDiscoveryProvider ?? throw new ArgumentNullException(
+            nameof(xenaDiscoveryProvider),
+            "No provider has been set up");
+
         _xenaDiscoveryOptions = xenaDiscoveryOptions;
     }
 
@@ -25,7 +28,7 @@ internal class XenaDiscoverBackgroundService : BackgroundService
 
             try
             {
-                await _xenaDiscoveryServicesProvider.RefreshServicesAsync(stoppingToken);
+                await _xenaDiscoveryProvider.RefreshServicesAsync(stoppingToken);
             }
             finally
             {

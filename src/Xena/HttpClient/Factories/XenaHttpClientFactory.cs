@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Reflection;
 using Refit;
 using Xena.Discovery.Interfaces;
 using Xena.HttpClient.Models;
@@ -7,48 +7,47 @@ namespace Xena.HttpClient.Factories;
 
 internal class XenaHttpClientFactory
 {
-    private readonly IXenaDiscoveryServicesProvider _discoveryServicesProvider;
+    private readonly IXenaDiscoveryProvider _discoveryProvider;
     private readonly ILogger<XenaHttpClientFactory> _logger;
 
-    public XenaHttpClientFactory(IXenaDiscoveryServicesProvider? discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
+    public XenaHttpClientFactory(IXenaDiscoveryProvider? discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
     {
-        _discoveryServicesProvider = discoveryServicesService ?? 
-                                    throw new NullReferenceException($"Interface {nameof(IXenaDiscoveryServicesProvider)} is not registered. " +
+        _discoveryProvider = discoveryServicesService ?? 
+                                    throw new NullReferenceException($"Interface {nameof(IXenaDiscoveryProvider)} is not registered. " +
                                                                     "Please add Discovery module to application");
         _logger = logger;
     }
 
-    public async Task<THttpClient> CreateHttpClient<THttpClient>() where THttpClient : IXenaHttpClient
+    public async Task<THttpClient> CreateHttpClient<THttpClient>(Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+        where THttpClient : IXenaHttpClient
     {
-        var httpClientName = typeof(THttpClient).FullName;
-        _logger.LogDebug($"Create HttpClient interface {httpClientName}");
+        var httpClientType = typeof(THttpClient);
+        var httpClientNameAttribute = httpClientType.GetCustomAttribute<XenaHttpClientAttribute>();
 
-        var services = await _discoveryServicesProvider.FindByTagAsync(httpClientName!);
-
-        if (!services.Any())
+        if (httpClientNameAttribute is null || string.IsNullOrWhiteSpace(httpClientNameAttribute.Name))
         {
-            var noServiceException = new Exception($"Not found registered service for HttpClient {httpClientName}");
+            throw new InvalidOperationException("You need to set XenaHttpClientAttribute with name of service on interface");
+        }
+
+        var serviceId = httpClientNameAttribute.Name;
+
+        var service = await _discoveryProvider.GetServiceAsync(serviceId);
+
+        if (service is null)
+        {
+            var noServiceException = new Exception($"Not found registered service for HttpClient {serviceId}");
 
             _logger.LogError(noServiceException, $"{nameof(XenaHttpClientFactory)}: Error occurred while creating HttpClient");
             throw noServiceException;
         }
 
-        if (services.Count > 1)
-        {
-            var servicesAsString = string.Join(", ", services.Select(s => s.Id));
-
-            var moreThenOneServiceException = new Exception($"Found more then one registered services for HttpClient {httpClientName}. Services: {servicesAsString}");
-            _logger.LogError(moreThenOneServiceException, $"{nameof(XenaHttpClientFactory)}: Error occurred while creating HttpClient");
-
-            throw moreThenOneServiceException;
-        }
-
-        var service = services.Single();
-
         var serviceUrl = $"{service.Address}:{ service.Port}";
-        _logger.LogDebug($"Address for HttpClient interface {httpClientName}: {serviceUrl}");
+        _logger.LogDebug($"Address for HttpClient interface {serviceId}: {serviceUrl}");
 
-        var xenaHttpClient = RestService.For<THttpClient>(serviceUrl);
+        var xenaHttpClient = RestService.For<THttpClient>(serviceUrl, new RefitSettings
+        {
+            AuthorizationHeaderValueWithParamGetter = authorizationHeaderFunc
+        });
 
         return xenaHttpClient;
     }

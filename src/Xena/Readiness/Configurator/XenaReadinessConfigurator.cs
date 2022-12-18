@@ -1,6 +1,6 @@
 ﻿using Xena.HealthCheck;
 using Xena.Readiness.Interfaces;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Readiness.Configurator;
 
@@ -22,7 +22,7 @@ internal class XenaReadinessConfigurator : IXenaReadinessConfigurator
 
         foreach (var xenaReadinessType in xenaReadinessTypes)
         {
-            _xenaWebApplicationBuilder.WebApplicationBuilder.Services.AddScoped(
+            _xenaWebApplicationBuilder.Services.AddScoped(
                 typeof(IXenaReadiness),
                 xenaReadinessType);
         }

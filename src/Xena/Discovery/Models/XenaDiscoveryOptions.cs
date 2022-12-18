@@ -2,5 +2,5 @@
 
 public class XenaDiscoveryOptions
 {
-    public TimeSpan RefreshServicesTimeThreshold { get; set; } = TimeSpan.FromSeconds(1);
+    public TimeSpan RefreshServicesTimeThreshold { get; set; } = TimeSpan.FromSeconds(10);
 }

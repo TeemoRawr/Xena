@@ -1,4 +1,6 @@
 using Autofac.Extensions.DependencyInjection;
+using Xena.Discovery;
+using Xena.Discovery.Consul;
 using Xena.Discovery.Consul.Configuration;
 using Xena.HealthCheck;
 using Xena.Readiness;
@@ -6,17 +8,19 @@ using Xena.Startup;
 
 var builder = XenaFactory.Build(args);
 
-var applicationBuilder = builder.WebApplicationBuilder;
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Services.AddRazorPages();
 
-applicationBuilder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-applicationBuilder.Services.AddRazorPages();
-
-    applicationBuilder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
+builder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
         .BindConfiguration("Consul");
 
 var app = await builder
     .AddReadiness(p => p.EnableAutoDiscoveryReadiness())
     .AddHealthChecks(p => p.EnableAutoDiscoveryHealthChecks())
+    .AddDiscovery(configurator =>
+    {
+        configurator.AddConsulProvider();
+    })
     .BuildAsync();
 
 if (!app.Environment.IsDevelopment())
@@ -34,4 +38,4 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-app.Run();
+await app.RunAsync();

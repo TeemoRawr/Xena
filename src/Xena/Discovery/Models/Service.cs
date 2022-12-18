@@ -2,21 +2,22 @@
 
 public class Service
 {
-    private readonly List<string> _tags = new();
+    private readonly List<string> _tags;
 
-    public string Id { get; set; } = null!;
-    public string Name { get; set; } = null!;
-    public string Address { get; set; } = null!;
-    public int Port { get; set; }
-
-    public IReadOnlyList<string> Tags
+    public Service(string id, string name, string address, int port, List<string> tags)
     {
-        get => _tags;
-        init => _tags.AddRange(value);
+        Id = id;
+        Name = name;
+        Address = address;
+        Port = port;
+
+        _tags = tags;
+        _tags.Add(id);
     }
 
-    public void AddTags(params string[] tags)
-    {
-        _tags.AddRange(tags);
-    }
+    public string Id { get; }
+    public string Name { get; }
+    public string Address { get; }
+    public int Port { get; }
+    public IReadOnlyList<string> Tags => _tags;
 }

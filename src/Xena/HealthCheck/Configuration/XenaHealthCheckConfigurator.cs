@@ -1,4 +1,4 @@
-﻿using Xena.Startup;
+﻿using Xena.Startup.Interfaces;
 
 namespace Xena.HealthCheck.Configuration;
 
@@ -17,10 +17,10 @@ internal class XenaHealthCheckConfigurator : IXenaHealthCheckConfigurator
             .SelectMany(p => p.GetTypes())
             .Where(t => t.IsClass && t.IsAssignableTo(typeof(IXenaHealthCheck)))
             .ToList();
-
+        
         foreach (var xenaHealthCheckType in xenaHealthCheckTypes)
         {
-            _xenaWebApplicationBuilder.WebApplicationBuilder.Services.AddScoped(
+            _xenaWebApplicationBuilder.Services.AddScoped(
                 typeof(IXenaHealthCheck),
                 xenaHealthCheckType);
         }

@@ -1,18 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Http.Features;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Startup;
 
-[ExcludeFromCodeCoverage]
-public sealed class XenaWebApplication : IHost, IApplicationBuilder, IEndpointRouteBuilder, IAsyncDisposable
+public sealed class XenaWebApplication : IXenaWebApplication
 {
-    internal WebApplication WebApplication { get; }
+    private readonly WebApplication _webApplication;
 
     IFeatureCollection IApplicationBuilder.ServerFeatures
     {
         get
         {
-            var applicationBuilder = WebApplication as IApplicationBuilder;
+            var applicationBuilder = _webApplication as IApplicationBuilder;
             return applicationBuilder.ServerFeatures;
         }
     }
@@ -21,7 +20,7 @@ public sealed class XenaWebApplication : IHost, IApplicationBuilder, IEndpointRo
     {
         get
         {
-            var endpointRouteBuilder = WebApplication as IEndpointRouteBuilder;
+            var endpointRouteBuilder = _webApplication as IEndpointRouteBuilder;
             return endpointRouteBuilder.DataSources;
         }
     }
@@ -32,132 +31,83 @@ public sealed class XenaWebApplication : IHost, IApplicationBuilder, IEndpointRo
     {
         get
         {
-            var applicationBuilder = WebApplication as IApplicationBuilder;
+            var applicationBuilder = _webApplication as IApplicationBuilder;
             return applicationBuilder.Properties;
         }
     }
 
-
     internal XenaWebApplication(WebApplication webApplication)
     {
-        WebApplication = webApplication;
+        _webApplication = webApplication;
     }
 
-    public IServiceProvider Services => WebApplication.Services;
-
-    /// <summary>
-    /// The application's configured <see cref="IConfiguration"/>.
-    /// </summary>
-    public IConfiguration Configuration => WebApplication.Configuration;
-
-    /// <summary>
-    /// The application's configured <see cref="IWebHostEnvironment"/>.
-    /// </summary>
-    public IWebHostEnvironment Environment => WebApplication.Environment;
-
-    /// <summary>
-    /// Allows consumers to be notified of application lifetime events.
-    /// </summary>
-    public IHostApplicationLifetime Lifetime => WebApplication.Lifetime;
-
-    /// <summary>
-    /// The default logger for the application.
-    /// </summary>
-    public ILogger Logger => WebApplication.Logger;
-
-    /// <summary>
-    /// The list of URLs that the HTTP server is bound to.
-    /// </summary>
-    public ICollection<string> Urls => WebApplication.Urls;
+    public IServiceProvider Services => _webApplication.Services;
+    
+    public IConfiguration Configuration => _webApplication.Configuration;
+    
+    public IWebHostEnvironment Environment => _webApplication.Environment;
+    
+    public IHostApplicationLifetime Lifetime => _webApplication.Lifetime;
+    
+    public ILogger Logger => _webApplication.Logger;
+    
+    public ICollection<string> Urls => _webApplication.Urls;
 
     IServiceProvider IApplicationBuilder.ApplicationServices
     {
         get
         {
-            var applicationBuilder = WebApplication as IApplicationBuilder;
+            var applicationBuilder = _webApplication as IApplicationBuilder;
             return applicationBuilder.ApplicationServices;
         }
         set
         {
-            var applicationBuilder = WebApplication as IApplicationBuilder;
+            var applicationBuilder = _webApplication as IApplicationBuilder;
             applicationBuilder.ApplicationServices = value;
         }
     }
-
-    /// <summary>
-    /// Start the application.
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns>
-    /// A <see cref="Task"/> that represents the startup of the <see cref="Microsoft.AspNetCore.Builder.WebApplication"/>.
-    /// Successful completion indicates the HTTP server is ready to accept new requests.
-    /// </returns>
+    
     public Task StartAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            WebApplication.Logger.LogInformation($"Application is going to start");
-            return WebApplication.StartAsync(cancellationToken);
+            _webApplication.Logger.LogInformation($"Application is going to start");
+            return _webApplication.StartAsync(cancellationToken);
         }
         catch (Exception e)
         {
-            WebApplication.Logger.LogCritical(e, "Error occurred while running application");
+            _webApplication.Logger.LogCritical(e, "Error occurred while running application");
             throw;
         }
     }
 
-    /// <summary>
-    /// Shuts down the application.
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns>
-    /// A <see cref="Task"/> that represents the shutdown of the <see cref="Microsoft.AspNetCore.Builder.WebApplication"/>.
-    /// Successful completion indicates that all the HTTP server has stopped.
-    /// </returns>
     public Task StopAsync(CancellationToken cancellationToken = default)
     {
-        return WebApplication.StopAsync(cancellationToken);
+        return _webApplication.StopAsync(cancellationToken);
     }
-
-    /// <summary>
-    /// Runs an application and returns a Task that only completes when the token is triggered or shutdown is triggered.
-    /// </summary>
-    /// <param name="url">The URL to listen to if the server hasn't been configured directly.</param>
-    /// <returns>
-    /// A <see cref="Task"/> that represents the entire runtime of the <see cref="Microsoft.AspNetCore.Builder.WebApplication"/> from startup to shutdown.
-    /// </returns>
-    public Task RunAsync(string? url = null) => WebApplication.RunAsync(url);
-
-    /// <summary>
-    /// Runs an application and block the calling thread until host shutdown.
-    /// </summary>
-    /// <param name="url">The URL to listen to if the server hasn't been configured directly.</param>
-    public void Run(string? url = null) => WebApplication.Run(url);
-
-    /// <summary>
-    /// Disposes the application.
-    /// </summary>
+    
+    public Task RunAsync(string? url = null) => _webApplication.RunAsync(url);
+    
+    public void Run(string? url = null) => _webApplication.Run(url);
+    
     void IDisposable.Dispose()
     {
-        var disposable = WebApplication as IDisposable;
+        var disposable = _webApplication as IDisposable;
         disposable.Dispose();
     }
 
-    /// <summary>
-    /// Disposes the application.
-    /// </summary>
-    public ValueTask DisposeAsync() => WebApplication.DisposeAsync();
+    public ValueTask DisposeAsync() => _webApplication.DisposeAsync();
 
     // REVIEW: Should this be wrapping another type?
     IApplicationBuilder IApplicationBuilder.New()
     {
-        var applicationBuilder = WebApplication as IApplicationBuilder;
+        var applicationBuilder = _webApplication as IApplicationBuilder;
         return applicationBuilder.New();
     }
 
     IApplicationBuilder IApplicationBuilder.Use(Func<RequestDelegate, RequestDelegate> middleware)
     {
-        var applicationBuilder = WebApplication as IApplicationBuilder;
+        var applicationBuilder = _webApplication as IApplicationBuilder;
         return applicationBuilder.Use(middleware);
     }
 
@@ -165,7 +115,7 @@ public sealed class XenaWebApplication : IHost, IApplicationBuilder, IEndpointRo
 
     RequestDelegate IApplicationBuilder.Build()
     {
-        var application = WebApplication as IApplicationBuilder;
+        var application = _webApplication as IApplicationBuilder;
         return application.Build();
     }
 }

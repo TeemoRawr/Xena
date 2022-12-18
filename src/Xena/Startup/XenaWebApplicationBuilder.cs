@@ -1,19 +1,25 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Xena.Startup.Interfaces;
 
 namespace Xena.Startup;
 
-[ExcludeFromCodeCoverage]
 internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
 {
-    public WebApplicationBuilder WebApplicationBuilder { get; }
-    private readonly IList<Func<WebApplication, Task>> _postBuildActions = new List<Func<WebApplication, Task>>();
+    private readonly WebApplicationBuilder _webApplicationBuilder;
+    private readonly List<Func<IXenaWebApplication, Task>> _postBuildActions = new();
 
     public XenaWebApplicationBuilder(WebApplicationBuilder webApplicationBuilder)
     {
-        WebApplicationBuilder = webApplicationBuilder;
+        _webApplicationBuilder = webApplicationBuilder;
     }
 
-    public IXenaWebApplicationBuilder AddPostBuildAction(Action<WebApplication> action)
+    public IWebHostEnvironment Environment => _webApplicationBuilder.Environment;
+    public IServiceCollection Services => _webApplicationBuilder.Services;
+    public ConfigurationManager Configuration => _webApplicationBuilder.Configuration;
+    public ILoggingBuilder Logging => _webApplicationBuilder.Logging;
+    public ConfigureWebHostBuilder WebHost => _webApplicationBuilder.WebHost;
+    public ConfigureHostBuilder Host => _webApplicationBuilder.Host;
+
+    public IXenaWebApplicationBuilder AddPostBuildAction(Action<IXenaWebApplication> action)
     {
         _postBuildActions.Add(application =>
         {
@@ -24,22 +30,21 @@ internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
         return this;
     }
 
-    public IXenaWebApplicationBuilder AddPostBuildAsyncAction(Func<WebApplication, Task> action)
+    public IXenaWebApplicationBuilder AddPostBuildAsyncAction(Func<IXenaWebApplication, Task> action)
     {
         _postBuildActions.Add(action);
         return this;
     }
 
-    public async Task<XenaWebApplication> BuildAsync()
+    public async Task<IXenaWebApplication> BuildAsync()
     {
-        var webApplication = WebApplicationBuilder.Build();
+        var webApplication = _webApplicationBuilder.Build();
+        var xenaWebApplication = new XenaWebApplication(webApplication);
 
         foreach (var postBuildAction in _postBuildActions)
         {
-            await postBuildAction(webApplication);
+            await postBuildAction(xenaWebApplication);
         }
-
-        var xenaWebApplication = new XenaWebApplication(webApplication);
 
         return xenaWebApplication;
     }

@@ -1,5 +1,5 @@
 ﻿using Xena.Readiness.Configurator;
-using Xena.Startup;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Readiness;
 
@@ -12,7 +12,7 @@ public static class XenaReadinessServiceExtensions
         var xenaReadinessConfiguration = new XenaReadinessConfigurator(webApplicationBuilder);
         configurationAction?.Invoke(xenaReadinessConfiguration);
 
-        webApplicationBuilder.WebApplicationBuilder.Services.AddTransient<XenaReadinessService>();
+        webApplicationBuilder.Services.AddTransient<XenaReadinessService>();
 
         webApplicationBuilder.AddPostBuildAsyncAction(async p =>
         {

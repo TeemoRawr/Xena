@@ -146,5 +146,21 @@ var app = builder
     .Build();
 ```
 
+## MemoryBus
+Xena framework offers to use simple CQRS memory bus
+
+### Usage
+To add MemoryBus extensions you need execute method `AddMemoryBus` on Xena application builder
+```
+var app = builder
+    .AddMemoryBus()
+    .Build();
+```
+
+Next step which you need to do is create one of supported message type
+* IXenaCommand - used to send command which are responisble to execute logic
+* IXenaQuery - used to obtain result to your logic
+* IXenaEvent - used to propagete message to all handlers
+
 # Contributing
 (TODO)

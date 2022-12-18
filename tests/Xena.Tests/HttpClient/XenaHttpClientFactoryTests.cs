@@ -12,6 +12,7 @@ namespace Xena.Tests.HttpClient;
 
 public class XenaHttpClientFactoryTests
 {
+    [XenaHttpClient(Name = "test")]
     public interface ITestHttpClient : IXenaHttpClient
     {
         [Post("/")]
@@ -24,17 +25,18 @@ public class XenaHttpClientFactoryTests
     public async Task CreateHttpClient_ShouldCreateImplementedHttpClient()
     {
         // arrange
-        var services = _fixture.Build<Service>()
-            .With(p => p.Name, typeof(ITestHttpClient).FullName)
-            .With(p => p.Address, "localhost")
-            .CreateMany(1)
-            .ToList();
+        var service = new Service(
+            "test",
+            _fixture.Create<string>(),
+            "localhost",
+            _fixture.Create<int>(),
+            new List<string>());
 
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
-        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
-        xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
-            .ReturnsAsync(services);
+        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
+        xenaDiscoveryServicesServiceMock.Setup(p => p.GetServiceAsync(It.IsAny<string>()))
+            .ReturnsAsync(service);
 
         var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
@@ -45,47 +47,19 @@ public class XenaHttpClientFactoryTests
         result.Should().BeAssignableTo<ITestHttpClient>();
         result.Should().BeAssignableTo<IXenaHttpClient>();
     }
-
-    [Fact]
-    public async Task CreateHttpClient_WhenTheClienIsRegisteredMoreThanOneTime_ShouldThrowAnException()
-    {
-        // arrange
-        var services = _fixture.Build<Service>()
-            .With(p => p.Name, typeof(ITestHttpClient).FullName)
-            .With(p => p.Address, "localhost")
-            .CreateMany()
-            .ToList();
-
-        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
-        xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
-            .ReturnsAsync(services);
-
-        var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
-
-        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
-
-        // act and assert
-        var exception = await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
-        exception.Message.Should()
-            .Contain("Found more then one registered services for HttpClient");
-    }
-
+    
     [Fact]
     public async Task CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
     {
         // arrange
-        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryServicesProvider>();
-        xenaDiscoveryServicesServiceMock.Setup(p => p.FindByTagAsync(It.IsAny<string>()))
-            .ReturnsAsync(Enumerable.Empty<Service>().ToList());
+        var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
 
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
         var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
         // act and assert
-        var exception = await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
-        exception.Message.Should()
-            .Be($"Not found registered service for HttpClient {typeof(ITestHttpClient).FullName}");
+        await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
     }
 
     [Fact]
@@ -97,7 +71,7 @@ public class XenaHttpClientFactoryTests
         // act and assert
         var exception = Assert.Throws<NullReferenceException>(() => new XenaHttpClientFactory(null, loggerMock.Object));
         exception.Message.Should()
-            .Be($"Interface {nameof(IXenaDiscoveryServicesProvider)} is not registered. " +
+            .Be($"Interface {nameof(IXenaDiscoveryProvider)} is not registered. " +
                 "Please add Discovery module to application");
     }
 }
