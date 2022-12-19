@@ -1,17 +1,30 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Xena.Discovery.Interfaces;
 using Xena.HealthCheck;
 
 namespace Xena.Discovery;
 
 public class XenaDiscoveryServicesHealthCheck : IXenaHealthCheck
 {
+    private readonly IXenaDiscoveryHealthCheck? _xenaDiscoveryHealthCheck;
+
+    public XenaDiscoveryServicesHealthCheck(IXenaDiscoveryHealthCheck? xenaDiscoveryHealthCheck)
+    {
+        _xenaDiscoveryHealthCheck = xenaDiscoveryHealthCheck;
+    }
+
     public string Name => "Xena Discovery services";
     public bool Enabled => true;
 
-    public Task<HealthCheckResult> Check(HealthCheckContext context, CancellationToken cancellationToken)
+    public async Task<HealthCheckResult> Check(HealthCheckContext context, CancellationToken cancellationToken)
     {
-        var result = HealthCheckResult.Healthy();
+        if (_xenaDiscoveryHealthCheck is null)
+        {
+            return HealthCheckResult.Healthy("Discovery health check is disabled"); 
+        }
 
-        return Task.FromResult(result);
+        var result = await _xenaDiscoveryHealthCheck.Check(context, cancellationToken);
+
+        return result;
     }
 }
