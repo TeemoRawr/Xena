@@ -35,7 +35,7 @@ public interface IXenaWebApplicationBuilder
     ConfigureHostBuilder Host { get; }
 
     /// <summary>
-    /// Method which allow to add action when the application will be builded. E.g you can use to invoke some service after build
+    /// Method which allows adding action after the application is built. E.g you can use to invoke some service after build
     /// </summary>
     /// <param name="action">
     /// Action which allow add callback which will be invoked when application will be builded
@@ -46,7 +46,7 @@ public interface IXenaWebApplicationBuilder
     IXenaWebApplicationBuilder AddPostBuildAction(Action<IXenaWebApplication> action);
 
     /// <summary>
-    /// Method which allow to add async action when the application will be builded. E.g you can use to invoke some service after build
+    /// Method which allows adding action after the application is built. E.g you can use to invoke some service after build
     /// </summary>
     /// <param name="action">
     /// Action which allow add callback which will be invoked when application will be builded
