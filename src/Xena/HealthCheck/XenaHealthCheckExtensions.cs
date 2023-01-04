@@ -9,6 +9,18 @@ namespace Xena.HealthCheck;
 
 public static class XenaHealthCheckExtensions
 {
+    /// <summary>
+    /// Adds required services for Health Check feature
+    /// </summary>
+    /// <param name="webApplicationBuilder">
+    /// The <see cref="IXenaWebApplicationBuilder"/> to add the services to.
+    /// </param>
+    /// <param name="configurationAction">
+    /// Action to configure Health Check feature
+    /// </param>
+    /// <returns>
+    /// The <see cref="IXenaWebApplicationBuilder"/> so that additional calls can be chained
+    /// </returns>
     public static IXenaWebApplicationBuilder AddHealthChecks(
         this IXenaWebApplicationBuilder webApplicationBuilder,
         Action<IXenaHealthCheckConfigurator>? configurationAction = null)
