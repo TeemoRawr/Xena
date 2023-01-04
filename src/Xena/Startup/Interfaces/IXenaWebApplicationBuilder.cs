@@ -24,13 +24,13 @@ public interface IXenaWebApplicationBuilder
 
     /// <summary>
     /// An <see cref="IWebHostBuilder"/> for configuring server specific properties, but not building.
-    /// To build after configuration, call <see cref="Build"/>.
+    /// To build after configuration, call <see cref="BuildAsync"/>.
     /// </summary>
     ConfigureWebHostBuilder WebHost { get; }
 
     /// <summary>
     /// An <see cref="IHostBuilder"/> for configuring host specific properties, but not building.
-    /// To build after configuration, call <see cref="Build"/>.
+    /// To build after configuration, call <see cref="BuildAsync"/>.
     /// </summary>
     ConfigureHostBuilder Host { get; }
 
@@ -38,7 +38,7 @@ public interface IXenaWebApplicationBuilder
     /// Method which allow to add action when the application will be builded. E.g you can use to invoke some service after build
     /// </summary>
     /// <param name="action">
-    /// Callback which will be invoked when application will be builded
+    /// Action which allow add callback which will be invoked when application will be builded
     /// </param>
     /// <returns>
     /// Allows fluent usage by returning the same builder
@@ -49,7 +49,7 @@ public interface IXenaWebApplicationBuilder
     /// Method which allow to add async action when the application will be builded. E.g you can use to invoke some service after build
     /// </summary>
     /// <param name="action">
-    /// Callback which will be invoked when application will be builded
+    /// Action which allow add callback which will be invoked when application will be builded
     /// </param>
     /// <returns>
     /// Allows fluent usage by returning the same builder
@@ -57,7 +57,7 @@ public interface IXenaWebApplicationBuilder
     IXenaWebApplicationBuilder AddPostBuildAsyncAction(Func<IXenaWebApplication, Task> action);
 
     /// <summary>
-    /// BuildAsync application
+    /// Build application asynchronously
     /// </summary>
     /// <returns>
     /// Returns <see cref="IXenaWebApplication"/>
