@@ -2,13 +2,13 @@
 using Microsoft.OpenApi.Readers;
 using Xena.HttpClient.Generator.Models;
 
-namespace Xena.HttpClient.Generator.Services;
+namespace Xena.HttpClient.Generator.Services.ModelGenerator;
 
-public class ModelGenerator
+public class ModelGeneratorService
 {
     private readonly PropertyGenerator _propertyGenerator;
 
-    public ModelGenerator(PropertyGenerator propertyGenerator)
+    public ModelGeneratorService(PropertyGenerator propertyGenerator)
     {
         _propertyGenerator = propertyGenerator;
     }
@@ -32,8 +32,7 @@ public class ModelGenerator
 
             clientModels.Add(clientModel);
         }
-
+        
         return clientModels;
     }
-
 }
