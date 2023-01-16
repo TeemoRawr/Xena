@@ -18,14 +18,15 @@ internal class XenaHttpClientFactory
         _logger = logger;
     }
 
-    public async Task<THttpClient> CreateHttpClient<THttpClient>() where THttpClient : IXenaHttpClient
+    public async Task<THttpClient> CreateHttpClient<THttpClient>(Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+        where THttpClient : IXenaHttpClient
     {
         var httpClientType = typeof(THttpClient);
         var httpClientNameAttribute = httpClientType.GetCustomAttribute<XenaHttpClientAttribute>();
 
         if (httpClientNameAttribute is null || string.IsNullOrWhiteSpace(httpClientNameAttribute.Name))
         {
-            throw new InvalidOperationException("You have to set XenaHttpClientAttribute with name of service");
+            throw new InvalidOperationException("You need to set XenaHttpClientAttribute with name of service on interface");
         }
 
         var serviceId = httpClientNameAttribute.Name;
@@ -43,7 +44,10 @@ internal class XenaHttpClientFactory
         var serviceUrl = $"{service.Address}:{ service.Port}";
         _logger.LogDebug($"Address for HttpClient interface {serviceId}: {serviceUrl}");
 
-        var xenaHttpClient = RestService.For<THttpClient>(serviceUrl);
+        var xenaHttpClient = RestService.For<THttpClient>(serviceUrl, new RefitSettings
+        {
+            AuthorizationHeaderValueWithParamGetter = authorizationHeaderFunc
+        });
 
         return xenaHttpClient;
     }

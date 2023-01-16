@@ -11,7 +11,7 @@ public class XenaHealthCheckService : IHealthCheck
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
 

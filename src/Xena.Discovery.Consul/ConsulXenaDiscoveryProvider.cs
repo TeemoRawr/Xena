@@ -5,28 +5,29 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Xena.Discovery.Consul.Configuration;
-using Xena.Discovery.Interfaces;
 using Xena.Discovery.Models;
 
 namespace Xena.Discovery.Consul;
 
-internal class ConsulXenaDiscoveryProvider : IXenaDiscoveryProvider, IDisposable
+internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
 {
     private bool _isInitialized;
-    private IConsulClient? _consulClient;
     private readonly IServer _serverAddressesFeature;
     private readonly IOptions<ConsulXenaDiscoveryServicesConfiguration> _consulOptions;
-    private readonly List<Service> _services = new ();
+    private readonly List<Service> _services = new();
     private readonly ILogger<ConsulXenaDiscoveryProvider> _logger;
+    private readonly IConsulClient _consulClient;
 
     public ConsulXenaDiscoveryProvider(
-        IServer serverAddressesFeature, 
-        IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions, 
-        ILogger<ConsulXenaDiscoveryProvider> logger)
+        IServer serverAddressesFeature,
+        IOptions<ConsulXenaDiscoveryServicesConfiguration> consulOptions,
+        ILogger<ConsulXenaDiscoveryProvider> logger,
+        IConsulClient consulClient)
     {
         _serverAddressesFeature = serverAddressesFeature;
         _consulOptions = consulOptions;
         _logger = logger;
+        _consulClient = consulClient;
     }
 
     public Task DeactivateAsync()
@@ -72,8 +73,8 @@ internal class ConsulXenaDiscoveryProvider : IXenaDiscoveryProvider, IDisposable
             .Select(s => new Service(
                 s.ID,
                 s.ID,
-                s.Address, 
-                s.Port, 
+                s.Address,
+                s.Port,
                 s.Tags.ToList()))
             .ToList();
 
@@ -90,34 +91,21 @@ internal class ConsulXenaDiscoveryProvider : IXenaDiscoveryProvider, IDisposable
     {
         var addresses = _serverAddressesFeature.Features.Get<IServerAddressesFeature>();
 
-        if (addresses is null)
+        if (addresses is null || !addresses.Addresses.Any())
         {
-            throw new NullReferenceException();
+            throw new InvalidOperationException("Cannot find binded addresses to server");
         }
-
-        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
-
-        if (consulDiscoveryServicesConfiguration is null)
-        {
-            throw new ArgumentNullException(
-                nameof(consulDiscoveryServicesConfiguration),
-                "Missing configuration for Consul provider");
-        }
-
-        _consulClient = new ConsulClient(configuration =>
-        {
-            configuration.Address = new Uri(consulDiscoveryServicesConfiguration.Host);
-        });
 
         var preferredAddress = addresses.Addresses.First();
 
         var uri = new Uri(preferredAddress);
+        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
 
 #if DEBUG
         await _consulClient.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
 #endif
 
-        var checkRegister = await 
+        var checkRegister = await
             _consulClient.Health.Service(consulDiscoveryServicesConfiguration.Id);
 
         if (checkRegister.Response.Any())
@@ -132,20 +120,7 @@ internal class ConsulXenaDiscoveryProvider : IXenaDiscoveryProvider, IDisposable
             Name = consulDiscoveryServicesConfiguration.Name,
             Address = $"{uri.Scheme}://{uri.Host}:{uri.Port}",
             Port = uri.Port,
-            Tags = new[] { consulDiscoveryServicesConfiguration.Name },
-            Checks = new []
-            {
-                new AgentServiceCheck
-                {
-                    Interval = TimeSpan.FromSeconds(3),
-                    HTTP = $"{uri.Scheme}://{uri.Host}:{uri.Port}/xena-health-check",
-                    // ID = "xena-health-check",
-                    Name = "Xena Health Check",
-                    Method = "GET",
-                    TLSSkipVerify = true,
-                    Timeout = TimeSpan.FromSeconds(5)
-                }
-            }
+            Tags = new[] { consulDiscoveryServicesConfiguration.Name }
         });
 
         if (serviceRegister.StatusCode != HttpStatusCode.OK)

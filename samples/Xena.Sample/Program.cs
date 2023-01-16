@@ -1,15 +1,19 @@
 using Autofac.Extensions.DependencyInjection;
-using Xena.Discovery;
-using Xena.Discovery.Consul;
 using Xena.Discovery.Consul.Configuration;
 using Xena.HealthCheck;
+using Xena.MemoryBus;
 using Xena.Readiness;
 using Xena.Startup;
 
 var builder = XenaFactory.Build(args);
 
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenLocalhost(5000);
+});
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 builder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
         .BindConfiguration("Consul");
@@ -17,10 +21,13 @@ builder.Services.AddOptions<ConsulXenaDiscoveryServicesConfiguration>()
 var app = await builder
     .AddReadiness(p => p.EnableAutoDiscoveryReadiness())
     .AddHealthChecks(p => p.EnableAutoDiscoveryHealthChecks())
-    .AddDiscovery(configurator =>
+    .AddMemoryBus(configurator =>
     {
-        configurator.AddConsulProvider();
-    })
+        configurator
+            .EnableAutoDiscoveryQueries()
+            .EnableAutoDiscoveryCommands()
+            .EnableAutoDiscoveryEvents();
+    })    
     .BuildAsync();
 
 if (!app.Environment.IsDevelopment())
@@ -36,6 +43,9 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.UseEndpoints(routeBuilder =>
+{
+    routeBuilder.MapControllers();
+});
 
 await app.RunAsync();
