@@ -18,7 +18,8 @@ internal class XenaHttpClientFactory
         _logger = logger;
     }
 
-    public async Task<THttpClient> CreateHttpClient<THttpClient>(Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+    public async Task<THttpClient> CreateHttpClient<THttpClient>(
+        Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
         where THttpClient : IXenaHttpClient
     {
         var httpClientType = typeof(THttpClient);
@@ -46,7 +47,7 @@ internal class XenaHttpClientFactory
 
         var xenaHttpClient = RestService.For<THttpClient>(serviceUrl, new RefitSettings
         {
-            AuthorizationHeaderValueWithParamGetter = authorizationHeaderFunc
+            AuthorizationHeaderValueWithParamGetter = authorizationHeaderFunc,
         });
 
         return xenaHttpClient;

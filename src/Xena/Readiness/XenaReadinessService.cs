@@ -58,9 +58,13 @@ internal class XenaReadinessService
         }
     }
 
-    public static IEnumerable<XenaReadinessBehavior> GetFlags(XenaReadinessBehavior e)
+    private static IEnumerable<XenaReadinessBehavior> GetFlags(XenaReadinessBehavior e)
     {
-        return Enum.GetValues(e.GetType()).Cast<Enum>().Where(e.HasFlag).Select(en => (XenaReadinessBehavior)en);
+        return Enum.GetValues(e.GetType())
+            .Cast<Enum>()
+            .Where(e.HasFlag)
+            .Select(en => (XenaReadinessBehavior)en)
+            .ToList();
     }
 
     private void ExecuteBehavior(IXenaReadiness xenaReadiness, XenaReadinessBehavior behavior, XenaReadinessStatus status)

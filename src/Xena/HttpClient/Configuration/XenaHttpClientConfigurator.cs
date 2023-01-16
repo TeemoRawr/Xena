@@ -13,13 +13,15 @@ internal class XenaHttpClientConfigurator : IXenaHttpClientConfigurator
         _xenaWebApplicationBuilder = xenaWebApplicationBuilder;
     }
 
-    public IXenaHttpClientConfigurator AddHttpClient<THttpClient>() where THttpClient : IXenaHttpClient
+    public IXenaHttpClientConfigurator AddHttpClient<THttpClient>(
+        Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+        where THttpClient : IXenaHttpClient
     {
         _xenaWebApplicationBuilder.Services.AddScoped(provider =>
         {
             var xenaHttpClientFactory = provider.GetRequiredService<XenaHttpClientFactory>();
 
-            return xenaHttpClientFactory.CreateHttpClient<THttpClient>();
+            return xenaHttpClientFactory.CreateHttpClient<THttpClient>(authorizationHeaderFunc);
         });
 
         return this;

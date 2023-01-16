@@ -3,5 +3,5 @@
 [AttributeUsage(AttributeTargets.Interface)]
 public class XenaHttpClientAttribute : Attribute
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 }

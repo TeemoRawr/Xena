@@ -16,8 +16,4 @@
     <ProjectReference Include="..\..\src\Xena\Xena.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="HealthCheck\" />
-  </ItemGroup>
-
 </Project>
