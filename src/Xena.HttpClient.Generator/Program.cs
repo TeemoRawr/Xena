@@ -2,7 +2,7 @@
 using Autofac;
 using Microsoft.OpenApi.Readers;
 using Xena.HttpClient.Generator;
-using Xena.HttpClient.Generator.Services;
+using Xena.HttpClient.Generator.Parsers.OpenApi;
 using Xena.HttpClient.Generator.Services.CodeGenerator;
 using Xena.HttpClient.Generator.Services.ModelGenerator;
 
@@ -49,11 +49,8 @@ rootCommand.SetHandler(async context =>
         return;
     }
 
-    var modelGenerator = container.Resolve<ModelGeneratorService>();
-    var schemas = modelGenerator.Build(apiDocument, apiDiagnostic);
-
-    var codeGeneratorService = new ApiModelsCodeGeneratorService();
-    var source = codeGeneratorService.GenerateCode(schemas);
+    var openApiParser = new OpenApiParser();
+    var source = openApiParser.Generate(apiDocument);
 
     await File.WriteAllTextAsync($"{openApiFileName.FullName}.cs", source);
 });

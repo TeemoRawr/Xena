@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Xena.HttpClient.Generator.Services;
 using Xena.HttpClient.Generator.Services.ModelGenerator;
 
 namespace Xena.HttpClient.Generator;
@@ -10,5 +9,6 @@ public class IocModule : Module
     {
         builder.RegisterType<ModelGeneratorService>();
         builder.RegisterType<PropertyGenerator>();
+        builder.RegisterType<ApiClientGeneratorService>();
     }
 }

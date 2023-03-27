@@ -1,9 +1,8 @@
 ﻿using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 using Xena.HttpClient.Generator.Models;
-using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Xena.HttpClient.Generator.Services.CodeGenerator;
+namespace Xena.HttpClient.Generator.Services.ModelGenerator;
 
 public class ApiClientGeneratorService
 {
@@ -14,30 +13,40 @@ public class ApiClientGeneratorService
             .Select(p => p.OperationId)
             .ToList();
 
-        var a = new List<object>();
-        
+        var apiClients = new List<ApiClientModel>();
+
         foreach (var operationId in operationIds)
         {
             var operations = apiDocument.Paths
                 .SelectMany(p => p.Value.Operations.Select(o => new
                 {
+                    Path = p.Key,
                     MethodType = o.Key,
                     Operation = o.Value
                 }))
                 .Where(p => p.Operation.OperationId == operationId)
                 .ToList();
 
-            // var methods = operations.Select(o =>
-            // {
-            //     var a = SF.MethodDeclaration(
-            //         SF.ParseTypeName()
-            //     )
-            // });
+            var apiClientModel = new ApiClientModel
+            {
+                Name = operationId
+            };
+
+            var clientModelsOperations = operations.Select(operation =>
+            {
+                return new ApiClientOperationModel
+                {
+                    Path = operation.Path,
+                    MethodType = operation.MethodType,
+                };
+            })
+            .ToList();
             
-            var apiClientCode = SF.InterfaceDeclaration(SF.Identifier(operationId));
+            apiClientModel.Operations = clientModelsOperations;
+            apiClients.Add(apiClientModel);
         }
-        
-        
-        return new List<ApiClientModel>();
+
+
+        return apiClients;
     }
 }
