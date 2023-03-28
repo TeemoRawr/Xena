@@ -16,17 +16,37 @@ public class ObjectCodeModel : BaseCodeModel
         _openApiDocument = openApiDocument;
     }
 
-    protected override MemberDeclarationSyntax GenerateInternal()
+    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
     {
-        var classProperties = Schema.Properties
-            .Select(p => ParserComposition.Parser.Parse(p.Key, p.Value, _openApiDocument))
-            .Select(p => p.Generate())
+        var parserOptions = new OpenApiParserOptions
+        {
+            IsRoot = false
+        };
+        
+        var modelGenerationResults = Schema.Properties
+            .Select(p => ParserComposition.Parser.Parse(p.Key, p.Value, _openApiDocument, parserOptions))
+            .Select(p => p.Generate(new CodeModelGenerateOptions
+            {
+                Prefix = NormalizedName
+            }))
             .ToList();
+
+        var extraObjectMembers = modelGenerationResults
+            .SelectMany(p => p.ExtraObjectMembers)
+            .ToList();
+
+        var members = modelGenerationResults
+            .Select(p => p.Memeber)
+            .ToList(); 
 
         var classClient = SF.ClassDeclaration(SF.Identifier(NormalizedName))
             .WithModifiers(new SyntaxTokenList(SF.Token(SyntaxKind.PublicKeyword)))
-            .WithMembers(new SyntaxList<MemberDeclarationSyntax>(classProperties));
+            .WithMembers(new SyntaxList<MemberDeclarationSyntax>(members));
 
-        return classClient;
+        return new CodeModelGenerationResult
+        {
+            Memeber = classClient,
+            ExtraObjectMembers = extraObjectMembers
+        };
     }
 }

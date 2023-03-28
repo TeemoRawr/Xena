@@ -3,24 +3,20 @@ using Xena.HttpClient.Generator.Models;
 
 namespace Xena.HttpClient.Generator.Parsers.OpenApi;
 
-public class OpenApiIntegerParser : OpenApiBaseParser
+public class OpenApiBooleanParser : OpenApiBaseParser
 {
-    public OpenApiIntegerParser(OpenApiBaseParser? nextParser) : base(nextParser)
+    public OpenApiBooleanParser(OpenApiBaseParser? nextParser) : base(nextParser)
     {
     }
 
     protected override bool CanParse(OpenApiSchema schema, OpenApiParserOptions options)
     {
-        return !options.IsRoot && schema.Type == "integer";
+        return !options.IsRoot && schema.Type == "boolean";
     }
 
     protected override BaseCodeModel InternalParse(string name, OpenApiSchema openApiSchema,
         OpenApiDocument openApiDocument, OpenApiParserOptions options)
     {
-        return openApiSchema.Format switch
-        {
-            "int64" => new LongCodeModel(name, openApiSchema),
-            _ => new IntCodeModel(name, openApiSchema)
-        };
+        return new BoolCodeModel(name, openApiSchema);
     }
 }

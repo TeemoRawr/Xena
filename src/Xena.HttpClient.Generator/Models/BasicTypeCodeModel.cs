@@ -11,7 +11,7 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
     {
     }
 
-    protected override MemberDeclarationSyntax GenerateInternal()
+    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
     {
         var propertyType = typeof(TType).FullName;
 
@@ -24,6 +24,9 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
                     .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
             );
 
-        return model;
+        return new CodeModelGenerationResult
+        {
+            Memeber = model
+        };
     }
 }

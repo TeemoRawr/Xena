@@ -12,25 +12,40 @@ public abstract class OpenApiBaseParser
         _nextParser = nextParser;
     }
 
-    protected abstract bool CanParse(OpenApiSchema schema);
-    protected abstract BaseCodeModel InternalParse(string name, OpenApiSchema openApiSchema, OpenApiDocument openApiDocument);
+    protected abstract bool CanParse(OpenApiSchema schema, OpenApiParserOptions options);
+    
+    protected abstract BaseCodeModel InternalParse(
+        string name, 
+        OpenApiSchema openApiSchema,
+        OpenApiDocument openApiDocument,
+        OpenApiParserOptions options);
 
-    public BaseCodeModel Parse(string name, OpenApiSchema openApiSchema, OpenApiDocument document)
+    public BaseCodeModel Parse(
+        string name,
+        OpenApiSchema openApiSchema,
+        OpenApiDocument document,
+        OpenApiParserOptions options)
     {
-        if (!CanParse(openApiSchema))
+        if (options is null)
+        {
+            throw new NullReferenceException("Options cannot be null");
+        }
+        
+        if (!CanParse(openApiSchema, options))
         {
             if (_nextParser is null)
             {
                 throw new Exception($"Unsupported type to parse {openApiSchema.Type}");
             }
 
-            return _nextParser.Parse(name, openApiSchema, document);
+            return _nextParser.Parse(name, openApiSchema, document, options);
         }
 
-        return InternalParse(name, openApiSchema, document);
+        return InternalParse(name, openApiSchema, document, options);
     }
 }
 
 public class OpenApiParserOptions
 {
+    public bool IsRoot { get; set; }
 }

@@ -9,12 +9,16 @@ public class OpenApiArrayParser : OpenApiBaseParser
     {
     }
 
-    protected override bool CanParse(OpenApiSchema schema)
+    protected override bool CanParse(OpenApiSchema schema, OpenApiParserOptions options)
     {
-        return schema.Type == "array";
+        return !options.IsRoot && schema.Type == "array";
     }
 
-    protected override BaseCodeModel InternalParse(string name, OpenApiSchema openApiSchema, OpenApiDocument openApiDocument)
+    protected override BaseCodeModel InternalParse(
+        string name,
+        OpenApiSchema openApiSchema,
+        OpenApiDocument openApiDocument,
+        OpenApiParserOptions options)
     {
         return new ArrayCodeModel(name, openApiSchema);
     }

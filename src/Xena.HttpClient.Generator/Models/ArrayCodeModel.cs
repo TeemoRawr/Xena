@@ -12,7 +12,7 @@ public class ArrayCodeModel : BaseCodeModel
     {
     }
 
-    protected override MemberDeclarationSyntax GenerateInternal()
+    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
     {
         var internalPropertyType = ResolveType(Schema.Items);
 
@@ -27,7 +27,10 @@ public class ArrayCodeModel : BaseCodeModel
                     .WithSemicolonToken(SF.Token(SyntaxKind.SemicolonToken))
             );
         
-        return model;
+        return new CodeModelGenerationResult
+        {
+            Memeber = model
+        };
     }
 
     private string ResolveType(OpenApiSchema itemsSchema)

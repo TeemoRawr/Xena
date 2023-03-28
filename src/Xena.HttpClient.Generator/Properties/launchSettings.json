@@ -2,7 +2,7 @@
   "profiles": {
     "Xena.HttpClient.Generator": {
         "commandName": "Project",
-        "commandLineArgs": "\"D:\\Dev\\openapi.yaml\" --ignore-errors"
+        "commandLineArgs": "\"C:\\Dev\\openapi.yaml\" --ignore-errors" 
     }
   }
 }

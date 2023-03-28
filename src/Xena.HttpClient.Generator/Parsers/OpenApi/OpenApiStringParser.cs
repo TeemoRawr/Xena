@@ -9,17 +9,18 @@ public class OpenApiStringParser : OpenApiBaseParser
     {
     }
 
-    protected override bool CanParse(OpenApiSchema schema)
+    protected override bool CanParse(OpenApiSchema schema, OpenApiParserOptions options)
     {
-        return schema.Type == "string";
+        return !options.IsRoot && schema.Type == "string";
     }
 
     protected override BaseCodeModel InternalParse(string name, OpenApiSchema openApiSchema,
-        OpenApiDocument openApiDocument)
+        OpenApiDocument openApiDocument, OpenApiParserOptions options)
     {
-        return openApiSchema.Format switch
+        return openApiSchema switch
         {
-            "date" or "date-time" => new DateTimeCodeModel(name, openApiSchema),
+            { Format: "date" or "date-time" } => new DateTimeCodeModel(name, openApiSchema),
+            { Enum.Count: > 0 } => new EnumCodeModel(name, openApiSchema),
             _ => new StringCodeModel(name, openApiSchema)
         };
     }

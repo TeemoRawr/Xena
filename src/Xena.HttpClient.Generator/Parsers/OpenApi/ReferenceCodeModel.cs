@@ -9,14 +9,54 @@ namespace Xena.HttpClient.Generator.Parsers.OpenApi;
 
 public class ReferenceCodeModel : BaseCodeModel
 {
+    private readonly OpenApiDocument _openApiDocument;
 
     public ReferenceCodeModel(string name, OpenApiSchema openApiSchema, OpenApiDocument openApiDocument) : base(name, openApiSchema)
     {
+        _openApiDocument = openApiDocument;
     }
 
-    protected override MemberDeclarationSyntax GenerateInternal()
+    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
     {
-        var propertyType = Schema.Reference.Id;
+        string propertyType;
+        var extraObjectMembers = new List<MemberDeclarationSyntax>();
+        
+        if (string.IsNullOrWhiteSpace(Schema.Reference?.Id))
+        {
+            propertyType = $"{options.Prefix}{NormalizedName}";
+            
+            var parserOptions = new OpenApiParserOptions
+            {
+                IsRoot = false
+            };
+            
+            var modelGenerationResults = Schema.Properties
+                .Select(p => ParserComposition.Parser.Parse(p.Key, p.Value, _openApiDocument, parserOptions))
+                .Select(p => p.Generate(new CodeModelGenerateOptions
+                {
+                    Prefix = NormalizedName
+                }))
+                .ToList();
+            
+            var extraObjectMembersFromGeneration = modelGenerationResults
+                .SelectMany(p => p.ExtraObjectMembers)
+                .ToList();
+
+            var members = modelGenerationResults
+                .Select(p => p.Memeber)
+                .ToList(); 
+
+            var extraClass = SyntaxFactory.ClassDeclaration(propertyType)
+                .WithModifiers(new SyntaxTokenList(SF.Token(SyntaxKind.PublicKeyword)))
+                .WithMembers(new SyntaxList<MemberDeclarationSyntax>(members));
+            
+            extraObjectMembers.AddRange(extraObjectMembersFromGeneration);
+            extraObjectMembers.Add(extraClass);
+        }
+        else
+        {
+            propertyType = Schema.Reference!.Id;
+        }
 
         var model = SF.PropertyDeclaration(SF.ParseTypeName(propertyType), NormalizedName)
             .WithModifiers(new SyntaxTokenList(SF.Token(SyntaxKind.PublicKeyword)))
@@ -27,6 +67,10 @@ public class ReferenceCodeModel : BaseCodeModel
                     .WithSemicolonToken(SF.Token(SyntaxKind.SemicolonToken))
             );
 
-        return model;
+        return new CodeModelGenerationResult
+        {
+            Memeber = model,
+            ExtraObjectMembers = extraObjectMembers
+        };
     }
 }

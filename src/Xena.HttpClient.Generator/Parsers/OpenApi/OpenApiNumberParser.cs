@@ -9,13 +9,13 @@ public class OpenApiNumberParser : OpenApiBaseParser
     {
     }
 
-    protected override bool CanParse(OpenApiSchema schema)
+    protected override bool CanParse(OpenApiSchema schema, OpenApiParserOptions options)
     {
-        return schema.Type == "number";
+        return !options.IsRoot &&  schema.Type == "number";
     }
 
     protected override BaseCodeModel InternalParse(string name, OpenApiSchema openApiSchema,
-        OpenApiDocument openApiDocument)
+        OpenApiDocument openApiDocument, OpenApiParserOptions options)
     {
         return openApiSchema.Format switch
         {

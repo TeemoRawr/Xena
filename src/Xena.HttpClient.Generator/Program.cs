@@ -45,6 +45,10 @@ rootCommand.SetHandler(async context =>
     if (!ignoreErrors && apiDiagnostic.Errors.Any())
     {
         Console.Error.WriteLine($"OpenApi document is invalid. Found {apiDiagnostic.Errors.Count} errors");
+        foreach (var error in apiDiagnostic.Errors)
+        {
+            Console.Error.WriteLine($"{error.Pointer}: {error.Message}");
+        }
         returnCode = 1;
         return;
     }
