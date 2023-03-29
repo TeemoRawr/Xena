@@ -2,10 +2,11 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
-using Xena.HttpClient.Generator.Parsers.OpenApi;
+using Xena.HttpClient.Generator.Parsers;
+using Xena.HttpClient.Generator.Parsers.ModelParser;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Xena.HttpClient.Generator.Models;
+namespace Xena.HttpClient.Generator.Models.CodeModel;
 
 public class ObjectCodeModel : BaseCodeModel
 {
@@ -24,10 +25,15 @@ public class ObjectCodeModel : BaseCodeModel
         };
         
         var modelGenerationResults = Schema.Properties
-            .Select(p => ParserComposition.Parser.Parse(p.Key, p.Value, _openApiDocument, parserOptions))
-            .Select(p => p.Generate(new CodeModelGenerateOptions
+            .Select(p => new 
             {
-                Prefix = NormalizedName
+                CodeModel = ParserComposition.ModelParser.Parse(p.Key, p.Value, _openApiDocument, parserOptions),
+                Name = p.Key
+            })
+            .Select(p => p.CodeModel.Generate(new CodeModelGenerateOptions
+            {
+                Prefix = NormalizedName,
+                IsRequired = Schema.Required.Contains(p.Name) 
             }))
             .ToList();
 

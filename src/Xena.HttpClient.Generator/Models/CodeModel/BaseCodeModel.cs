@@ -1,12 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.OpenApi.Models;
-using System.Xml.Linq;
 using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.OpenApi.Models;
 using Xena.HttpClient.Generator.Extensions;
 
-namespace Xena.HttpClient.Generator.Models;
+namespace Xena.HttpClient.Generator.Models.CodeModel;
 
 public abstract class BaseCodeModel
 {
@@ -34,8 +34,48 @@ public abstract class BaseCodeModel
         var internalModel = GenerateInternal(options);
 
         internalModel = AddSchemaDescription(internalModel);
-
+        internalModel = AddAttributes(internalModel, options);
+        
         return internalModel;
+    }
+
+    private CodeModelGenerationResult AddAttributes(
+        CodeModelGenerationResult internalModel,
+        CodeModelGenerateOptions generateOptions)
+    {
+        var attributesToAdd = new List<AttributeSyntax>();
+        
+        if (generateOptions.IsRequired)
+        {
+            var requiredAttribute = SyntaxFactory.Attribute(
+                SyntaxFactory.ParseName(nameof(RequiredAttribute))
+            );
+
+            attributesToAdd.Add(requiredAttribute);
+        }
+
+        if (!attributesToAdd.Any())
+        {
+            return internalModel;
+        }
+
+        var newMember = internalModel.Memeber
+            .WithAttributeLists(
+                SyntaxFactory.List(
+                    new List<AttributeListSyntax>
+                    {
+                        SyntaxFactory.AttributeList(
+                            SyntaxFactory.SeparatedList(attributesToAdd)    
+                        )
+                    }
+                )
+            );
+
+        return new CodeModelGenerationResult
+        {
+            Memeber = newMember,
+            ExtraObjectMembers = internalModel.ExtraObjectMembers
+        };
     }
 
     private CodeModelGenerationResult AddSchemaDescription(CodeModelGenerationResult result)
@@ -79,5 +119,6 @@ public class CodeModelGenerationResult
 
 public class CodeModelGenerateOptions
 {
-    public string Prefix { get; init; }
+    public string Prefix { get; init; } = null!;
+    public bool IsRequired { get; init; }
 }

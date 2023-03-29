@@ -2,9 +2,7 @@
 using Autofac;
 using Microsoft.OpenApi.Readers;
 using Xena.HttpClient.Generator;
-using Xena.HttpClient.Generator.Parsers.OpenApi;
-using Xena.HttpClient.Generator.Services.CodeGenerator;
-using Xena.HttpClient.Generator.Services.ModelGenerator;
+using Xena.HttpClient.Generator.Parsers;
 
 var containerBuilder = new ContainerBuilder();
 containerBuilder.RegisterModule<IocModule>();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace Xena.HttpClient.Generator.Models;
+namespace Xena.HttpClient.Generator.Models.CodeModel;
 
 public class LongCodeModel : BasicTypeCodeModel<long>
 {

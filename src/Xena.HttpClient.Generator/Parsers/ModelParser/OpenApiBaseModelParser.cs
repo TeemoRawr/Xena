@@ -1,13 +1,13 @@
 ﻿using Microsoft.OpenApi.Models;
-using Xena.HttpClient.Generator.Models;
+using Xena.HttpClient.Generator.Models.CodeModel;
 
-namespace Xena.HttpClient.Generator.Parsers.OpenApi;
+namespace Xena.HttpClient.Generator.Parsers.ModelParser;
 
-public abstract class OpenApiBaseParser
+public abstract class OpenApiBaseModelParser
 {
-    private readonly OpenApiBaseParser? _nextParser;
+    private readonly OpenApiBaseModelParser? _nextParser;
 
-    protected OpenApiBaseParser(OpenApiBaseParser? nextParser)
+    protected OpenApiBaseModelParser(OpenApiBaseModelParser? nextParser)
     {
         _nextParser = nextParser;
     }

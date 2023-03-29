@@ -1,9 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
 
-namespace Xena.HttpClient.Generator.Models;
+namespace Xena.HttpClient.Generator.Models.CodeModel;
 
 public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
 {
@@ -15,7 +14,7 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
     {
         var propertyType = typeof(TType).FullName;
 
-        var model = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(propertyType), NormalizedName)
+        var model = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(propertyType!), NormalizedName)
             .WithModifiers(new SyntaxTokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
             .AddAccessorListAccessors(
                 SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)

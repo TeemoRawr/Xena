@@ -1,15 +1,14 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Formatting;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
-
+using Xena.HttpClient.Generator.Parsers.ModelParser;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Xena.HttpClient.Generator.Parsers.OpenApi;
+namespace Xena.HttpClient.Generator.Parsers;
 
 public static class ParserComposition
 {
-    public static readonly OpenApiBaseParser Parser = new OpenApiArrayParser(new OpenApiReferenceParser(new OpenApiObjectParser(new OpenApiBooleanParser(new OpenApiNumberParser(new OpenApiIntegerParser(new OpenApiStringParser(null)))))));
+    public static readonly OpenApiBaseModelParser ModelParser = new OpenApiArrayModelParser(new OpenApiReferenceModelParser(new OpenApiObjectModelParser(new OpenApiBooleanModelParser(new OpenApiNumberModelParser(new OpenApiIntegerModelParser(new OpenApiStringModelParser(null)))))));
 }
 
 public class OpenApiParser
@@ -22,7 +21,7 @@ public class OpenApiParser
         };
         
         var generationResults = document.Components.Schemas
-            .Select(p => ParserComposition.Parser.Parse(p.Key, p.Value, document, parserOptions))
+            .Select(p => ParserComposition.ModelParser.Parse(p.Key, p.Value, document, parserOptions))
             .Select(p => p.Generate())
             .ToList();
 
@@ -32,7 +31,8 @@ public class OpenApiParser
         var codeNamespace = SF.NamespaceDeclaration(SF.ParseName("Test"))
             .WithMembers(new SyntaxList<MemberDeclarationSyntax>(members.Concat(extraMembers).ToList()))
             .AddUsings(
-                SF.UsingDirective(SF.ParseName("System.Collections.Generic"))
+                SF.UsingDirective(SF.ParseName("System.Collections.Generic")),
+                SF.UsingDirective(SF.ParseName("System.ComponentModel.DataAnnotations"))
             );
 
         var code = new StringWriter();
