@@ -43,7 +43,7 @@ public class ReferenceCodeModel : BaseCodeModel
                 .ToList();
 
             var members = modelGenerationResults
-                .Select(p => p.Memeber)
+                .Select(p => p.Member)
                 .ToList(); 
 
             var extraClass = SyntaxFactory.ClassDeclaration(propertyType)
@@ -69,7 +69,7 @@ public class ReferenceCodeModel : BaseCodeModel
 
         return new CodeModelGenerationResult
         {
-            Memeber = model,
+            Member = model,
             ExtraObjectMembers = extraObjectMembers
         };
     }

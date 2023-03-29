@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.OpenApi.Models;
+using TypeNameFormatter;
 using Xena.HttpClient.Generator.Extensions;
 
 namespace Xena.HttpClient.Generator.Models.CodeModel;
@@ -33,9 +34,9 @@ public abstract class BaseCodeModel
     {
         var internalModel = GenerateInternal(options);
 
-        internalModel = AddSchemaDescription(internalModel);
         internalModel = AddAttributes(internalModel, options);
-        
+        internalModel = AddSchemaDescription(internalModel);
+
         return internalModel;
     }
 
@@ -48,18 +49,27 @@ public abstract class BaseCodeModel
         if (generateOptions.IsRequired)
         {
             var requiredAttribute = SyntaxFactory.Attribute(
-                SyntaxFactory.ParseName(nameof(RequiredAttribute))
+                SyntaxFactory.ParseName(typeof(RequiredAttribute).GetFormattedName())
             );
 
             attributesToAdd.Add(requiredAttribute);
         }
 
+        if (Schema.Deprecated)
+        {
+            var obsoleteAttribute = SyntaxFactory.Attribute(
+                SyntaxFactory.ParseName(typeof(ObsoleteAttribute).GetFormattedName())
+            );
+
+            attributesToAdd.Add(obsoleteAttribute);
+        }
+        
         if (!attributesToAdd.Any())
         {
             return internalModel;
         }
 
-        var newMember = internalModel.Memeber
+        var newMember = internalModel.Member
             .WithAttributeLists(
                 SyntaxFactory.List(
                     new List<AttributeListSyntax>
@@ -73,7 +83,7 @@ public abstract class BaseCodeModel
 
         return new CodeModelGenerationResult
         {
-            Memeber = newMember,
+            Member = newMember,
             ExtraObjectMembers = internalModel.ExtraObjectMembers
         };
     }
@@ -87,7 +97,7 @@ public abstract class BaseCodeModel
             return result;
         }
      
-        var newMember = result.Memeber.WithLeadingTrivia(
+        var newMember = result.Member.WithLeadingTrivia(
             SyntaxFactory.TriviaList(
                 SyntaxFactory.Trivia(
                     SyntaxFactory.DocumentationComment(
@@ -103,22 +113,8 @@ public abstract class BaseCodeModel
 
         return new CodeModelGenerationResult
         {
-            Memeber = newMember,
+            Member = newMember,
             ExtraObjectMembers = result.ExtraObjectMembers
         };
     }
-}
-
-public class CodeModelGenerationResult
-{
-    public MemberDeclarationSyntax Memeber { get; init; } = null!;
-
-    public IReadOnlyList<MemberDeclarationSyntax> ExtraObjectMembers { get; init; } =
-        new List<MemberDeclarationSyntax>(0);
-}
-
-public class CodeModelGenerateOptions
-{
-    public string Prefix { get; init; } = null!;
-    public bool IsRequired { get; init; }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Models;
+using Xena.HttpClient.Generator.Extensions;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Xena.HttpClient.Generator.Models.CodeModel;
@@ -13,7 +14,7 @@ public class ArrayCodeModel : BaseCodeModel
 
     protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
     {
-        var internalPropertyType = ResolveType(Schema.Items);
+        var internalPropertyType = TypeResolver.Resolve(Schema.Items);
 
         var propertyType = $"IReadOnlyList<{internalPropertyType}>";
 
@@ -28,28 +29,7 @@ public class ArrayCodeModel : BaseCodeModel
         
         return new CodeModelGenerationResult
         {
-            Memeber = model
-        };
-    }
-
-    private string ResolveType(OpenApiSchema itemsSchema)
-    {
-        if (!string.IsNullOrWhiteSpace(itemsSchema.Reference?.Id))
-        {
-            return itemsSchema.Reference.Id;
-        }
-
-        return itemsSchema.Type switch
-        {
-            "text" when itemsSchema.Format == "date" => "DateTime",
-            "text" when itemsSchema.Format == "date-time" => "DateTime",
-            "text" => "string",
-            "number" when itemsSchema.Format == "double" => "double",
-            "number" when itemsSchema.Format == "float" => "double",
-            "number" => "int",
-            "integer" when itemsSchema.Format == "int64" => "long",
-            "integer" => "int",
-            _ => "object"
+            Member = model
         };
     }
 }

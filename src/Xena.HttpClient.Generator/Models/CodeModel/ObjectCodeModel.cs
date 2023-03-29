@@ -42,7 +42,7 @@ public class ObjectCodeModel : BaseCodeModel
             .ToList();
 
         var members = modelGenerationResults
-            .Select(p => p.Memeber)
+            .Select(p => p.Member)
             .ToList(); 
 
         var classClient = SF.ClassDeclaration(SF.Identifier(NormalizedName))
@@ -51,7 +51,7 @@ public class ObjectCodeModel : BaseCodeModel
 
         return new CodeModelGenerationResult
         {
-            Memeber = classClient,
+            Member = classClient,
             ExtraObjectMembers = extraObjectMembers
         };
     }

@@ -43,7 +43,7 @@ public class EnumCodeModel : BaseCodeModel
         
         return new CodeModelGenerationResult
         {
-            Memeber = member,
+            Member = member,
             ExtraObjectMembers = new List<MemberDeclarationSyntax> { enumObjectMember }
         };
     }

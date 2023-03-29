@@ -20,6 +20,7 @@ public class OpenApiStringModelParser : OpenApiBaseModelParser
         return openApiSchema switch
         {
             { Format: "date" or "date-time" } => new DateTimeCodeModel(name, openApiSchema),
+            { Format: "uri" } => new UriCodeModel(name, openApiSchema),
             { Enum.Count: > 0 } => new EnumCodeModel(name, openApiSchema),
             _ => new StringCodeModel(name, openApiSchema)
         };

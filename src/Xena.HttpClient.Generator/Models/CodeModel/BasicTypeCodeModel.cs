@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Models;
+using TypeNameFormatter;
 
 namespace Xena.HttpClient.Generator.Models.CodeModel;
 
@@ -12,7 +13,7 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
 
     protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
     {
-        var propertyType = typeof(TType).FullName;
+        var propertyType = typeof(TType).GetFormattedName();
 
         var model = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(propertyType!), NormalizedName)
             .WithModifiers(new SyntaxTokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
@@ -25,7 +26,7 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
 
         return new CodeModelGenerationResult
         {
-            Memeber = model
+            Member = model
         };
     }
 }

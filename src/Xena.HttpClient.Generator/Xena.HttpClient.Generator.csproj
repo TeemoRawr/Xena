@@ -11,6 +11,7 @@
     <PackageReference Include="Autofac" Version="6.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0" />
     <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.3" />
+    <PackageReference Include="TypeNameFormatter.Sources" Version="1.*" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
