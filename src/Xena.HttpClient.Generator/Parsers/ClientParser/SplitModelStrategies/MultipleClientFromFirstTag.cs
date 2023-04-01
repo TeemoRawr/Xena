@@ -16,7 +16,7 @@ public class MultipleClientFromFirstTag : ISplitModelStrategy
     {
         var controllerName = apiOperation.Tags.FirstOrDefault()?.Name ?? string.Empty;
         
-        return string.Format(_modelStrategyOptions.ClientPatternName, controllerName);
+        return string.Format(_modelStrategyOptions.ClientPatternName, controllerName.ToPascalCase());
     }
 
     public string GetMethodName(string path, OperationType operationType, OpenApiOperation apiOperation)
@@ -36,6 +36,6 @@ public class MultipleClientFromFirstTag : ISplitModelStrategy
             return BuildAlternativeMethodName();
         }
 
-        return apiOperationOperationId;
+        return apiOperationOperationId.ToPascalCase();
     }
 }

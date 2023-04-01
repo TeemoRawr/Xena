@@ -46,22 +46,18 @@ public class TypeSyntaxFactory
                     SyntaxFactory.Identifier(identifier),
                     SyntaxFactory.TypeArgumentList(
                         SyntaxFactory.SeparatedList(
-                            arguments.Select(
-                                x =>
+                            arguments.Select(x =>
                                 {
-                                    if(x is GenericNameSyntax)
+                                    if(x is GenericNameSyntax genericNameSyntax)
                                     {
-                                        var gen_x = x as GenericNameSyntax;
                                         return
                                             GetTypeSyntax(
-                                                gen_x.Identifier.ToString(),
-                                                gen_x.TypeArgumentList.Arguments.ToArray()
+                                                genericNameSyntax.Identifier.ToString(),
+                                                genericNameSyntax.TypeArgumentList.Arguments.ToArray()
                                             );
                                     }
-                                    else
-                                    {
-                                        return x;
-                                    }
+
+                                    return x;
                                 }
                             )
                         )

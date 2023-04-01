@@ -9,7 +9,7 @@ public class OpenApiIntegerModelParser : OpenApiBaseModelParser
     {
     }
 
-    protected override bool CanParse(OpenApiSchema schema, OpenApiParserOptions options)
+    protected override bool CanParse(OpenApiSchema schema, string name, OpenApiParserOptions options)
     {
         return !options.IsRoot && schema.Type == "integer";
     }

@@ -34,8 +34,11 @@ public abstract class BaseCodeModel
     {
         var internalModel = GenerateInternal(options);
 
-        internalModel = AddAttributes(internalModel, options);
-        internalModel = AddSchemaDescription(internalModel);
+        if (internalModel.Member is not null)
+        {
+            internalModel = AddAttributes(internalModel, options);
+            internalModel = AddSchemaDescription(internalModel);
+        }
 
         return internalModel;
     }
@@ -44,12 +47,18 @@ public abstract class BaseCodeModel
         CodeModelGenerationResult internalModel,
         CodeModelGenerateOptions generateOptions)
     {
+        var existingAttributes = internalModel
+            .Member?
+            .AttributeLists
+            .SelectMany(p => p.Attributes) ?? new List<AttributeSyntax>();
+
         var attributesToAdd = new List<AttributeSyntax>();
+        attributesToAdd.AddRange(existingAttributes);
         
         if (generateOptions.IsRequired)
         {
             var requiredAttribute = SyntaxFactory.Attribute(
-                SyntaxFactory.ParseName(typeof(RequiredAttribute).GetFormattedName())
+                SyntaxFactory.ParseName(typeof(RequiredAttribute).GetNiceName())
             );
 
             attributesToAdd.Add(requiredAttribute);
@@ -58,7 +67,7 @@ public abstract class BaseCodeModel
         if (Schema.Deprecated)
         {
             var obsoleteAttribute = SyntaxFactory.Attribute(
-                SyntaxFactory.ParseName(typeof(ObsoleteAttribute).GetFormattedName())
+                SyntaxFactory.ParseName(typeof(ObsoleteAttribute).GetNiceName())
             );
 
             attributesToAdd.Add(obsoleteAttribute);
@@ -69,7 +78,7 @@ public abstract class BaseCodeModel
             return internalModel;
         }
 
-        var newMember = internalModel.Member
+        var newMember = internalModel.Member!
             .WithAttributeLists(
                 SyntaxFactory.List(
                     new List<AttributeListSyntax>
@@ -97,7 +106,7 @@ public abstract class BaseCodeModel
             return result;
         }
      
-        var newMember = result.Member.WithLeadingTrivia(
+        var newMember = result.Member!.WithLeadingTrivia(
             SyntaxFactory.TriviaList(
                 SyntaxFactory.Trivia(
                     SyntaxFactory.DocumentationComment(

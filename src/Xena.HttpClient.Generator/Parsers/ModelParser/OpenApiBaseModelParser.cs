@@ -12,7 +12,7 @@ public abstract class OpenApiBaseModelParser
         _nextParser = nextParser;
     }
 
-    protected abstract bool CanParse(OpenApiSchema schema, OpenApiParserOptions options);
+    protected abstract bool CanParse(OpenApiSchema schema, string name, OpenApiParserOptions options);
     
     protected abstract BaseCodeModel InternalParse(
         string name, 
@@ -31,7 +31,7 @@ public abstract class OpenApiBaseModelParser
             throw new NullReferenceException("Options cannot be null");
         }
         
-        if (!CanParse(openApiSchema, options))
+        if (!CanParse(openApiSchema, name, options))
         {
             if (_nextParser is null)
             {

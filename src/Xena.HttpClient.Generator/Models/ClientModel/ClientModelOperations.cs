@@ -32,18 +32,18 @@ public class ClientModelOperations
     {
         var methodName = _splitModelStrategy.GetMethodName(_path, _operationType, _apiOperation);
 
-        var parameterSyntaxes = _apiOperation.Parameters
+        var parameterSyntaxList = _apiOperation.Parameters
             .Select(GenerateParameter)
             .ToList();
 
         return SyntaxFactory.MethodDeclaration(
             new SyntaxList<AttributeListSyntax>(),
             SyntaxFactory.TokenList(),
-            SyntaxFactory.ParseTypeName(typeof(string).Name),
+            SyntaxFactory.ParseTypeName(typeof(string).GetNiceName()),
             null,
             SyntaxFactory.Identifier(methodName),
             null,
-            SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(parameterSyntaxes)),
+            SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(parameterSyntaxList)),
             new SyntaxList<TypeParameterConstraintClauseSyntax>(),
             null,
             SyntaxFactory.Token(SyntaxKind.SemicolonToken)
@@ -57,7 +57,7 @@ public class ClientModelOperations
         if (apiParameter.Required)
         {
             var requiredAttribute = SyntaxFactory.Attribute(
-                SyntaxFactory.ParseName(typeof(RequiredAttribute).GetFormattedName())
+                SyntaxFactory.ParseName(typeof(RequiredAttribute).GetNiceName())
             );
 
             attributesToAdd.Add(requiredAttribute);

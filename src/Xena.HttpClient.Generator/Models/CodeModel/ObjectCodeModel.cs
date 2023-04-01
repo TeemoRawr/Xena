@@ -1,7 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.CodeDom.Compiler;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
+using TypeNameFormatter;
+using Xena.HttpClient.Generator.Extensions;
 using Xena.HttpClient.Generator.Parsers;
 using Xena.HttpClient.Generator.Parsers.ModelParser;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -42,16 +45,46 @@ public class ObjectCodeModel : BaseCodeModel
             .ToList();
 
         var members = modelGenerationResults
-            .Select(p => p.Member)
-            .ToList(); 
+            .Where(p => p.Member is not null)
+            .Select(p => p.Member!)
+            .ToList();
 
-        var classClient = SF.ClassDeclaration(SF.Identifier(NormalizedName))
+        var generatedCodeAttributeSyntax = SF.Attribute(
+            SF.ParseName(typeof(GeneratedCodeAttribute).GetNiceName())
+        ).WithArgumentList(
+            SF.AttributeArgumentList(
+                SF.SeparatedList(new List<AttributeArgumentSyntax>
+                {
+                    SF.AttributeArgument(
+                        SF.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SF.Literal("test")
+                        )
+                    ),
+                    SF.AttributeArgument(
+                        SF.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SF.Literal("test")
+                        )
+                    )
+                })    
+            )
+        );
+
+        var modelDeclaration = SF.ClassDeclaration(SF.Identifier(NormalizedName))
             .WithModifiers(new SyntaxTokenList(SF.Token(SyntaxKind.PublicKeyword)))
+            .WithAttributeLists(SF.List(new List<AttributeListSyntax>
+            {
+                SF.AttributeList(SF.SeparatedList(new List<AttributeSyntax>
+                {
+                    generatedCodeAttributeSyntax
+                }))
+            }))
             .WithMembers(new SyntaxList<MemberDeclarationSyntax>(members));
 
         return new CodeModelGenerationResult
         {
-            Member = classClient,
+            Member = modelDeclaration,
             ExtraObjectMembers = extraObjectMembers
         };
     }

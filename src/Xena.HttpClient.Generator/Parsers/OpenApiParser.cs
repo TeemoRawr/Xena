@@ -12,7 +12,7 @@ namespace Xena.HttpClient.Generator.Parsers;
 
 public static class ParserComposition
 {
-    public static readonly OpenApiBaseModelParser ModelParser = new OpenApiArrayModelParser(new OpenApiReferenceModelParser(new OpenApiObjectModelParser(new OpenApiBooleanModelParser(new OpenApiNumberModelParser(new OpenApiIntegerModelParser(new OpenApiStringModelParser(null)))))));
+    public static readonly OpenApiBaseModelParser ModelParser = new OpenApiArrayModelParser(new OpenApiReferenceModelParser(new OpenApiObjectModelParser(new OpenApiBooleanModelParser(new OpenApiNumberModelParser(new OpenApiIntegerModelParser(new OpenApiStringModelParser(new EmptyApiModelParser())))))));
 }
 
 public class OpenApiParser
@@ -34,7 +34,8 @@ public class OpenApiParser
             .ToList();
         
         var modelMembers = generationResults
-            .Select(p => p.Member)
+            .Where(m => m.Member is not null)
+            .Select(p => p.Member!)
             .ToList();
 
         var openApiClientParser = new OpenApiClientParser(new MultipleClientFromFirstTag(new ModelStrategyOptions

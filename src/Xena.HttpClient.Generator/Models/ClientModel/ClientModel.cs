@@ -1,5 +1,7 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.CodeDom.Compiler;
 using Xena.HttpClient.Generator.Extensions;
 using Xena.HttpClient.Generator.Parsers.ClientParser.SplitModelStrategies;
 
@@ -25,11 +27,41 @@ public class ClientModel
 
     public MemberDeclarationSyntax Generate()
     {
+        var generatedCodeAttributeSyntax = SyntaxFactory.Attribute(
+            SyntaxFactory.ParseName(typeof(GeneratedCodeAttribute).GetNiceName())
+        ).WithArgumentList(
+            SyntaxFactory.AttributeArgumentList(
+                SyntaxFactory.SeparatedList(new List<AttributeArgumentSyntax>
+                {
+                    SyntaxFactory.AttributeArgument(
+                        SyntaxFactory.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SyntaxFactory.Literal("test")
+                        )
+                    ),
+                    SyntaxFactory.AttributeArgument(
+                        SyntaxFactory.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SyntaxFactory.Literal("test")
+                        )
+                    )
+                })
+            )
+        );
+
         var methodsDeclarations = _clientModelOperationsList
             .Select(o => o.Generate())
             .ToList();
 
         var interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(NormalizedClientName)
+            .WithAttributeLists(SyntaxFactory.List(new List<AttributeListSyntax>
+            {
+                SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList(new List<AttributeSyntax>
+                {
+                    generatedCodeAttributeSyntax
+                }))
+            }))
+            .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
             .WithMembers(SyntaxFactory.List(methodsDeclarations));
 
         return interfaceDeclaration;

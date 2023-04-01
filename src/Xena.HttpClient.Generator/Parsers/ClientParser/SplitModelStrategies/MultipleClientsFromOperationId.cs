@@ -31,7 +31,7 @@ public class MultipleClientsFromOperationId : ISplitModelStrategy
                 : string.Empty;
         }
 
-        return string.Format(_modelStrategyOptions.ClientPatternName, controllerName);
+        return string.Format(_modelStrategyOptions.ClientPatternName, controllerName.ToPascalCase());
     }
 
     public string GetMethodName(string path, OperationType operationType, OpenApiOperation apiOperation)
@@ -68,6 +68,6 @@ public class MultipleClientsFromOperationId : ISplitModelStrategy
             methodName = BuildAlternativeMethodName();
         }
 
-        return methodName;
+        return methodName.ToPascalCase();
     }
 }
