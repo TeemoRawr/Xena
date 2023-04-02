@@ -23,14 +23,14 @@ public abstract class BaseCodeModel
     
     protected OpenApiSchema Schema { get; }
     
-    protected abstract CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options);
+    protected abstract CodeModelGenerationResult<MemberDeclarationSyntax> GenerateInternal(CodeModelGenerateOptions options);
 
-    public CodeModelGenerationResult Generate()
+    public CodeModelGenerationResult<MemberDeclarationSyntax> Generate()
     {
         return Generate(new CodeModelGenerateOptions());
     }
     
-    public CodeModelGenerationResult Generate(CodeModelGenerateOptions options)
+    public CodeModelGenerationResult<MemberDeclarationSyntax> Generate(CodeModelGenerateOptions options)
     {
         var internalModel = GenerateInternal(options);
 
@@ -43,8 +43,8 @@ public abstract class BaseCodeModel
         return internalModel;
     }
 
-    private CodeModelGenerationResult AddAttributes(
-        CodeModelGenerationResult internalModel,
+    private CodeModelGenerationResult<MemberDeclarationSyntax> AddAttributes(
+        CodeModelGenerationResult<MemberDeclarationSyntax> internalModel,
         CodeModelGenerateOptions generateOptions)
     {
         var existingAttributes = internalModel
@@ -90,14 +90,15 @@ public abstract class BaseCodeModel
                 )
             );
 
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = newMember,
             ExtraObjectMembers = internalModel.ExtraObjectMembers
         };
     }
 
-    private CodeModelGenerationResult AddSchemaDescription(CodeModelGenerationResult result)
+    private CodeModelGenerationResult<MemberDeclarationSyntax> AddSchemaDescription(
+        CodeModelGenerationResult<MemberDeclarationSyntax> result)
     {
         var workspace = (AdhocWorkspace)new AdhocWorkspace().AddProject("Project", "C#").Solution.Workspace;
         
@@ -120,7 +121,7 @@ public abstract class BaseCodeModel
         
         newMember =  (MemberDeclarationSyntax)Formatter.Format(newMember, workspace);
 
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = newMember,
             ExtraObjectMembers = result.ExtraObjectMembers

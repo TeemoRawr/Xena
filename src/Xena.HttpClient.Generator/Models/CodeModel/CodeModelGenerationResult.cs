@@ -1,8 +1,9 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Xena.HttpClient.Generator.Models.CodeModel;
 
-public record CodeModelGenerationResult
+public record CodeModelGenerationResult<TResult> where TResult : CSharpSyntaxNode
 {
     public MemberDeclarationSyntax? Member { get; init; } = null!;
 

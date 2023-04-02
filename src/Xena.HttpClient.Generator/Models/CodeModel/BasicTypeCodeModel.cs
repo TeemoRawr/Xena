@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
 using TypeNameFormatter;
 
@@ -11,7 +12,7 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
     {
     }
 
-    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
+    protected override CodeModelGenerationResult<MemberDeclarationSyntax> GenerateInternal(CodeModelGenerateOptions options)
     {
         var propertyType = typeof(TType).GetFormattedName();
 
@@ -24,7 +25,7 @@ public abstract class BasicTypeCodeModel<TType> : BaseCodeModel
                     .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
             );
 
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = model
         };

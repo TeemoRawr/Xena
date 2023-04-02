@@ -20,7 +20,7 @@ public class ObjectCodeModel : BaseCodeModel
         _openApiDocument = openApiDocument;
     }
 
-    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
+    protected override CodeModelGenerationResult<MemberDeclarationSyntax> GenerateInternal(CodeModelGenerateOptions options)
     {
         var parserOptions = new OpenApiParserOptions
         {
@@ -82,7 +82,7 @@ public class ObjectCodeModel : BaseCodeModel
             }))
             .WithMembers(new SyntaxList<MemberDeclarationSyntax>(members));
 
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = modelDeclaration,
             ExtraObjectMembers = extraObjectMembers

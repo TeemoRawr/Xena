@@ -45,10 +45,12 @@ public class OpenApiClientParser
                     _splitModelStrategy,
                     o.Path,
                     o.OperationType,
-                    o.ApiOperation
+                    o.ApiOperation,
+                    o.ApiOperation.Parameters
                 )).ToList();
+                
 
-                return new ClientModel(_splitModelStrategy, p.Key, clientModelOperationsList);
+                return new ClientModel(p.Key, clientModelOperationsList);
             })
             .ToList();
         

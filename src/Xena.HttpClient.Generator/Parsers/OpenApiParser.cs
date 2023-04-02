@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.OpenApi.Models;
 using Xena.HttpClient.Generator.Parsers.ClientParser;
 using Xena.HttpClient.Generator.Parsers.ClientParser.SplitModelStrategies;
@@ -29,7 +28,7 @@ public class OpenApiParser
             .Select(p => p.Generate())
             .ToList();
 
-        var extraMembers = generationResults
+        var extraModelMembers = generationResults
             .SelectMany(p => p.ExtraObjectMembers)
             .ToList();
         
@@ -43,20 +42,32 @@ public class OpenApiParser
             ClientPatternName = "I{0}ApiService"
         }));
         
-        var clientMembers = openApiClientParser.Parse(document.Paths)
+        var clientMembersResults = openApiClientParser.Parse(document.Paths)
             .Select(p => p.Generate())
+            .ToList();
+
+        var extraClientMembers = clientMembersResults
+            .SelectMany(p => p.ExtraObjectMembers)
+            .ToList();
+
+        var clientMembers = clientMembersResults
+            .Where(m => m.Member is not null)
+            .Select(p => p.Member!)
             .ToList();
 
         var memberList = new List<MemberDeclarationSyntax>();
         memberList.AddRange(clientMembers);
         memberList.AddRange(modelMembers);
-        memberList.AddRange(extraMembers);
+        memberList.AddRange(extraClientMembers);
+        memberList.AddRange(extraModelMembers);
         
         var codeNamespace = SF.NamespaceDeclaration(SF.ParseName("Test"))
             .WithMembers(SF.List(memberList))
             .AddUsings(
+                SF.UsingDirective(SF.ParseName("System")),
                 SF.UsingDirective(SF.ParseName("System.Collections.Generic")),
-                SF.UsingDirective(SF.ParseName("System.ComponentModel.DataAnnotations"))
+                SF.UsingDirective(SF.ParseName("System.ComponentModel.DataAnnotations")),
+                SF.UsingDirective(SF.ParseName("RestEase"))
             );
 
         var code = new StringWriter();

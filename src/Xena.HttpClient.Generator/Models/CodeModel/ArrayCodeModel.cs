@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
 using Xena.HttpClient.Generator.Extensions;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -12,7 +13,7 @@ public class ArrayCodeModel : BaseCodeModel
     {
     }
 
-    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
+    protected override CodeModelGenerationResult<MemberDeclarationSyntax> GenerateInternal(CodeModelGenerateOptions options)
     {
         var internalPropertyType = TypeResolver.Resolve(Schema.Items);
 
@@ -27,7 +28,7 @@ public class ArrayCodeModel : BaseCodeModel
                     .WithSemicolonToken(SF.Token(SyntaxKind.SemicolonToken))
             );
         
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = model
         };

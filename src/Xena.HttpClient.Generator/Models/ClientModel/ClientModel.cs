@@ -3,21 +3,19 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.CodeDom.Compiler;
 using Xena.HttpClient.Generator.Extensions;
+using Xena.HttpClient.Generator.Models.CodeModel;
 using Xena.HttpClient.Generator.Parsers.ClientParser.SplitModelStrategies;
 
 namespace Xena.HttpClient.Generator.Models.ClientModel;
 
 public class ClientModel
 {
-    private readonly ISplitModelStrategy _splitModelStrategy;
     private readonly IReadOnlyList<ClientModelOperations> _clientModelOperationsList;
 
     public ClientModel(
-        ISplitModelStrategy splitModelStrategy,
         string clientName,
         IReadOnlyList<ClientModelOperations> clientModelOperationsList)
     {
-        _splitModelStrategy = splitModelStrategy;
         _clientModelOperationsList = clientModelOperationsList;
         ClientName = clientName;
     }
@@ -25,7 +23,7 @@ public class ClientModel
     public string ClientName { get; }
     public string NormalizedClientName => ClientName.ToPascalCase();
 
-    public MemberDeclarationSyntax Generate()
+    public CodeModelGenerationResult<MemberDeclarationSyntax> Generate()
     {
         var generatedCodeAttributeSyntax = SyntaxFactory.Attribute(
             SyntaxFactory.ParseName(typeof(GeneratedCodeAttribute).GetNiceName())
@@ -49,8 +47,16 @@ public class ClientModel
             )
         );
 
-        var methodsDeclarations = _clientModelOperationsList
+        var methodsDeclarationsResults = _clientModelOperationsList
             .Select(o => o.Generate())
+            .ToList();
+
+        var extraObjectMembers = methodsDeclarationsResults
+            .SelectMany(p => p.ExtraObjectMembers)
+            .ToList();
+
+        var methodsDeclarations = methodsDeclarationsResults
+            .Select(p => p.Member)
             .ToList();
 
         var interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(NormalizedClientName)
@@ -64,6 +70,10 @@ public class ClientModel
             .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
             .WithMembers(SyntaxFactory.List(methodsDeclarations));
 
-        return interfaceDeclaration;
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
+        {
+            Member = interfaceDeclaration,
+            ExtraObjectMembers = extraObjectMembers
+        };
     }
 }

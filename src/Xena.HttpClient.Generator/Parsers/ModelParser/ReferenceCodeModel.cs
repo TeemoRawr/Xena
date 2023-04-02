@@ -16,7 +16,7 @@ public class ReferenceCodeModel : BaseCodeModel
         _openApiDocument = openApiDocument;
     }
 
-    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
+    protected override CodeModelGenerationResult<MemberDeclarationSyntax> GenerateInternal(CodeModelGenerateOptions options)
     {
         string propertyType;
         var extraObjectMembers = new List<MemberDeclarationSyntax>();
@@ -67,7 +67,7 @@ public class ReferenceCodeModel : BaseCodeModel
                     .WithSemicolonToken(SF.Token(SyntaxKind.SemicolonToken))
             );
 
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = model,
             ExtraObjectMembers = extraObjectMembers

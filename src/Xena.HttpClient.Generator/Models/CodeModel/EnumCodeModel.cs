@@ -13,7 +13,7 @@ public class EnumCodeModel : BaseCodeModel
     {
     }
 
-    protected override CodeModelGenerationResult GenerateInternal(CodeModelGenerateOptions options)
+    protected override CodeModelGenerationResult<MemberDeclarationSyntax> GenerateInternal(CodeModelGenerateOptions options)
     {
         var enumType = $"{options.Prefix}{NormalizedName}";
 
@@ -41,7 +41,7 @@ public class EnumCodeModel : BaseCodeModel
                     .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
             );
         
-        return new CodeModelGenerationResult
+        return new CodeModelGenerationResult<MemberDeclarationSyntax>
         {
             Member = member,
             ExtraObjectMembers = new List<MemberDeclarationSyntax> { enumObjectMember }

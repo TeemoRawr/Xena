@@ -40,15 +40,19 @@ rootCommand.SetHandler(async context =>
     var reader = new OpenApiStringReader();
     var apiDocument = reader.Read(fileContent, out var apiDiagnostic);
 
-    if (!ignoreErrors && apiDiagnostic.Errors.Any())
+    if (apiDiagnostic.Errors.Any())
     {
         Console.Error.WriteLine($"OpenApi document is invalid. Found {apiDiagnostic.Errors.Count} errors");
         foreach (var error in apiDiagnostic.Errors)
         {
             Console.Error.WriteLine($"{error.Pointer}: {error.Message}");
         }
-        returnCode = 1;
-        return;
+
+        if (!ignoreErrors)
+        {
+            returnCode = 1;
+            return;
+        }
     }
 
     var openApiParser = new OpenApiParser();

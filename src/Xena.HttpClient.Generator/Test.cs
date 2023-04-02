@@ -1,15 +1,20 @@
 ﻿namespace Test
 {
+    using System;
     using System.CodeDom.Compiler;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using RestEase;
 
     [GeneratedCode("test", "test")]
     public interface IPetsApiService
     {
-        string ListPets(int limit);
-        string CreatePets();
-        string ShowPetById([Required] string petId);
+        [Get("/pets")]
+        Task<IReadOnlyList<Pet>> ListPets(int limit);
+        [Post("/pets")]
+        Task CreatePets();
+        [Get("/pets/{petId}")]
+        Task<Pet> ShowPetById([Required] string petId);
     }
 
     [GeneratedCode("test", "test")]
@@ -21,6 +26,7 @@
         [Required]
         public string Name { set; get; }
 
+        [Obsolete]
         public string Tag { set; get; }
     }
 
