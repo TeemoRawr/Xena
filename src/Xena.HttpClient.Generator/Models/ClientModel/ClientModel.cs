@@ -56,7 +56,8 @@ public class ClientModel
             .ToList();
 
         var methodsDeclarations = methodsDeclarationsResults
-            .Select(p => p.Member)
+            .Where(p => p.Member is not null)
+            .Select(p => p.Member!)
             .ToList();
 
         var interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(NormalizedClientName)

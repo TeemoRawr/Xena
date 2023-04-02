@@ -230,23 +230,27 @@ public class ClientModelOperations
             {
                 ParameterLocation.Query => typeof(QueryAttribute),
                 ParameterLocation.Header => typeof(HeadAttribute),
-                ParameterLocation.Path => typeof(PathAttribute)
+                ParameterLocation.Path => typeof(PathAttribute),
+                _ => null
             };
 
-            var inAttribute = SyntaxFactory.Attribute(
-                SyntaxFactory.ParseName(apiParameterInType.GetNiceName()),
-                SyntaxFactory.AttributeArgumentList(SyntaxFactory.SeparatedList(new List<AttributeArgumentSyntax>
-                {
-                    SyntaxFactory.AttributeArgument(
-                        SyntaxFactory.LiteralExpression(
-                            SyntaxKind.StringLiteralExpression,
-                            SyntaxFactory.Literal(apiParameter.Name)
+            if (apiParameterInType is not null)
+            {
+                var inAttribute = SyntaxFactory.Attribute(
+                    SyntaxFactory.ParseName(apiParameterInType.GetNiceName()),
+                    SyntaxFactory.AttributeArgumentList(SyntaxFactory.SeparatedList(new List<AttributeArgumentSyntax>
+                    {
+                        SyntaxFactory.AttributeArgument(
+                            SyntaxFactory.LiteralExpression(
+                                SyntaxKind.StringLiteralExpression,
+                                SyntaxFactory.Literal(apiParameter.Name)
+                            )
                         )
-                    )
-                }))
-            );
+                    }))
+                );
 
-            attributesToAdd.Add(inAttribute);
+                attributesToAdd.Add(inAttribute);
+            }
         }
 
         var parameterType = TypeResolver.Resolve(apiParameter.Schema);
