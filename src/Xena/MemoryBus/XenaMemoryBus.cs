@@ -4,14 +4,14 @@ namespace Xena.MemoryBus;
 
 internal class XenaMemoryBus : IXenaMemoryBus
 {
-    private readonly XenaQueryBus _queryBus;
-    private readonly XenaCommandBus _commandBus;
-    private readonly XenaEventBus _eventBus;
+    private readonly IXenaQueryBus _queryBus;
+    private readonly IXenaCommandBus _commandBus;
+    private readonly IXenaEventBus _eventBus;
 
     public XenaMemoryBus(
-        XenaQueryBus queryBus,
-        XenaCommandBus commandBus,
-        XenaEventBus eventBus)
+        IXenaQueryBus queryBus,
+        IXenaCommandBus commandBus,
+        IXenaEventBus eventBus)
     {
         _queryBus = queryBus;
         _commandBus = commandBus;

@@ -13,9 +13,9 @@ public static class XenaMemoryBusServicesExtensions
         var configurator = new XenaMemoryBusConfigurator(builder);
         configurationAction?.Invoke(configurator);
         
-        builder.Services.AddTransient<XenaCommandBus>();
-        builder.Services.AddTransient<XenaQueryBus>();
-        builder.Services.AddTransient<XenaEventBus>();
+        builder.Services.AddTransient<IXenaCommandBus, XenaCommandBus>();
+        builder.Services.AddTransient<IXenaQueryBus, XenaQueryBus>();
+        builder.Services.AddTransient<IXenaEventBus, XenaEventBus>();
         builder.Services.AddTransient<IXenaMemoryBus, XenaMemoryBus>();
 
         return builder;

@@ -2,7 +2,7 @@
 
 namespace Xena.MemoryBus;
 
-internal class XenaEventBus
+internal class XenaEventBus : IXenaEventBus
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -15,7 +15,7 @@ internal class XenaEventBus
     {
         var eventType = @event.GetType();
         var eventHandlerType = typeof(IXenaEventHandler<>).MakeGenericType(eventType);
-        
+
         var eventHandlers = _serviceProvider.GetServices(eventHandlerType);
 
         var eventTasks = eventHandlers
