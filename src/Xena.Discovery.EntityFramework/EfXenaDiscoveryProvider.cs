@@ -20,6 +20,12 @@ internal class EfXenaDiscoveryProvider : IXenaDiscoveryProvider
         await _context.SaveChangesAsync();
     }
 
+    public Service? GetService(string id)
+    {
+        var service = _context.Services.SingleOrDefault(s => s.Id == id);
+        return service;
+    }
+
     public async Task<Service?> GetServiceAsync(string id)
     {
         var service = await _context.Services.SingleOrDefaultAsync(s => s.Id == id);
@@ -36,5 +42,5 @@ internal class EfXenaDiscoveryProvider : IXenaDiscoveryProvider
     public Task RefreshServicesAsync(CancellationToken stoppingToken)
     {
         return Task.CompletedTask;
-    }
+    }    
 }

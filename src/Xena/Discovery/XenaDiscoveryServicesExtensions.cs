@@ -18,6 +18,7 @@ public static class XenaDiscoveryServicesExtensions
         Action<IXenaDiscoveryServicesConfigurator> configuratorAction)
     {
         webApplicationBuilder.Services.AddHostedService<XenaDiscoverBackgroundService>();
+        webApplicationBuilder.Services.AddTransient<IStartupFilter, XenaDiscoveryStartupFilter>();
 
         var configurator = new XenaDiscoveryServicesConfigurator(webApplicationBuilder);
 

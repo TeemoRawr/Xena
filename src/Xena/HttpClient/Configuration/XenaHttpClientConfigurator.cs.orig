@@ -13,15 +13,26 @@ internal class XenaHttpClientConfigurator : IXenaHttpClientConfigurator
         _xenaWebApplicationBuilder = xenaWebApplicationBuilder;
     }
 
+<<<<<<< Updated upstream
     public IXenaHttpClientConfigurator AddHttpClient<THttpClient>(
         Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
-        where THttpClient : class, IXenaHttpClient
+        where THttpClient : IXenaHttpClient
+=======
+    public IXenaHttpClientConfigurator AddHttpClient<THttpClient>() where THttpClient : class, IXenaHttpClient
+>>>>>>> Stashed changes
     {
-        _xenaWebApplicationBuilder.Services.AddScoped(provider =>
+        _xenaWebApplicationBuilder.Services.AddScoped<THttpClient>(provider =>
         {
             var xenaHttpClientFactory = provider.GetRequiredService<XenaHttpClientFactory>();
+            
 
+<<<<<<< Updated upstream
             return xenaHttpClientFactory.CreateHttpClient<THttpClient>(authorizationHeaderFunc);
+=======
+            var httpClient = xenaHttpClientFactory.CreateHttpClient<THttpClient>();
+
+            return httpClient;
+>>>>>>> Stashed changes
         });
 
         return this;

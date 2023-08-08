@@ -23,6 +23,12 @@ internal class MemoryXenaDiscoveryProvider : IXenaDiscoveryProvider
         return Task.CompletedTask;
     }
 
+    public Service? GetService(string id)
+    {
+        var service = _services.FirstOrDefault(s => s.Id == id);
+        return service;
+    }
+
     public Task<Service?> GetServiceAsync(string id)
     {
         var service = _services.FirstOrDefault(s => s.Id == id);

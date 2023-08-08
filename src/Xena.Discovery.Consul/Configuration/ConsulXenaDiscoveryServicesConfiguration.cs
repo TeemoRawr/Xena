@@ -6,8 +6,8 @@ public class ConsulXenaDiscoveryServicesConfiguration
 {
     [Required]
     public string Host { get; set; } = null!;
-    [Required]
 
+    [Required]
     public string Id { get; set; } = null!;
     
     [Required]

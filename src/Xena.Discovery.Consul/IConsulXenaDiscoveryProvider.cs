@@ -2,8 +2,6 @@
 
 namespace Xena.Discovery.Consul;
 
-internal interface IConsulXenaDiscoveryProvider : IXenaDiscoveryProvider, IDisposable
+internal interface IConsulXenaDiscoveryProvider : IXenaDiscoveryProvider, IXenaDiscoveryFinalizerService, IXenaDiscoveryInitializeService, IDisposable
 {
-    Task InitializeConsulAsync();
-    Task DeactivateAsync();
 }

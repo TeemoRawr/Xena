@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Polly;
 using Xena.Discovery.Consul.Configuration;
 using Xena.Discovery.Models;
+using Policy = Polly.Policy;
 
 namespace Xena.Discovery.Consul;
 
@@ -30,17 +32,16 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
         _consulClient = consulClient;
     }
 
-    public Task DeactivateAsync()
-    {
-        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
-
-        return _consulClient!.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
-    }
-
     public Task AddServiceAsync(Service service)
     {
         _services.Add(service);
         return Task.CompletedTask;
+    }
+
+    public Service? GetService(string id)
+    {
+        var service = _services.SingleOrDefault(s => s.Id == id);
+        return service;
     }
 
     public Task<Service?> GetServiceAsync(string id)
@@ -63,6 +64,8 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
             return;
         }
 
+        _logger.LogInformation("Start refreshing services from Consul");
+
         var consulDiscoveryServicesConfiguration = _consulOptions.Value;
 
         await _consulClient!.Agent.PassTTL(consulDiscoveryServicesConfiguration.Id, "Ok", stoppingToken);
@@ -80,33 +83,33 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
 
         _services.Clear();
         _services.AddRange(services);
+
+        _logger.LogInformation("Refreshing services from Consul done");
     }
 
-    public void Dispose()
+    public Task FinalizeAsync()
     {
-        _consulClient?.Dispose();
+        var consulDiscoveryServicesConfiguration = _consulOptions.Value;
+
+        return _consulClient!.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
     }
 
-    public async Task InitializeConsulAsync()
+    public async Task InitializeAsync()
     {
-        var addresses = _serverAddressesFeature.Features.Get<IServerAddressesFeature>();
+        var preferredAddress = Policy.HandleResult<IServerAddressesFeature>(addresses => 
+                addresses is null || !addresses.Addresses.Any())
+            .WaitAndRetry(5, i => TimeSpan.FromSeconds(1))
+            .Execute(() => _serverAddressesFeature.Features.Get<IServerAddressesFeature>());
 
-        if (addresses is null || !addresses.Addresses.Any())
-        {
-            throw new InvalidOperationException("Cannot find binded addresses to server");
-        }
-
-        var preferredAddress = addresses.Addresses.First();
-
-        var uri = new Uri(preferredAddress);
+        var uri = new Uri(preferredAddress.Addresses.First());
         var consulDiscoveryServicesConfiguration = _consulOptions.Value;
 
 #if DEBUG
+        _logger.LogDebug($"Unregister service {consulDiscoveryServicesConfiguration.Id} from Consul");
         await _consulClient.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
 #endif
 
-        var checkRegister = await
-            _consulClient.Health.Service(consulDiscoveryServicesConfiguration.Id);
+        var checkRegister = await _consulClient.Health.Service(consulDiscoveryServicesConfiguration.Id);
 
         if (checkRegister.Response.Any())
         {
@@ -118,17 +121,23 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
         {
             ID = consulDiscoveryServicesConfiguration.Id,
             Name = consulDiscoveryServicesConfiguration.Name,
-            Address = $"{uri.Scheme}://{uri.Host}:{uri.Port}",
+            Address = $"{uri.Scheme}://{uri.Host}",
             Port = uri.Port,
             Tags = new[] { consulDiscoveryServicesConfiguration.Name }
         });
 
         if (serviceRegister.StatusCode != HttpStatusCode.OK)
         {
-            throw new Exception(
-                $"Error occurred while register service with name {consulDiscoveryServicesConfiguration.Name} exists in Consul.");
+            throw new Exception($"Error occurred while register service with name {consulDiscoveryServicesConfiguration.Name} exists in Consul.");
         }
 
         _isInitialized = true;
+        _logger.LogDebug("Consul Xena discovery initialized");
+        await RefreshServicesAsync(CancellationToken.None);
+    }
+
+    public void Dispose()
+    {
+        _consulClient?.Dispose();
     }
 }

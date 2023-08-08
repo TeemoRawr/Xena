@@ -18,8 +18,12 @@ internal class XenaHttpClientFactory
         _logger = logger;
     }
 
-    public THttpClient CreateHttpClient<THttpClient>(
+<<<<<<< Updated upstream
+    public async Task<THttpClient> CreateHttpClient<THttpClient>(
         Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+=======
+    public THttpClient CreateHttpClient<THttpClient>(Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+>>>>>>> Stashed changes
         where THttpClient : IXenaHttpClient
     {
         var httpClientType = typeof(THttpClient);

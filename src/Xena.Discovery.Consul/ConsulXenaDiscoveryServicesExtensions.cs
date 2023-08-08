@@ -14,6 +14,8 @@ public static class ConsulXenaDiscoveryServicesExtensions
     {
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IConsulXenaDiscoveryProvider, ConsulXenaDiscoveryProvider>();
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryProvider>(p => p.GetRequiredService<IConsulXenaDiscoveryProvider>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryInitializeService>(p => p.GetRequiredService<IConsulXenaDiscoveryProvider>());
+        xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IXenaDiscoveryFinalizerService>(p => p.GetRequiredService<IConsulXenaDiscoveryProvider>());
         xenaDiscoveryServicesConfigurator.ServiceCollection.AddSingleton<IConsulClient>(provider =>
         {
             var consulOptions = provider.GetRequiredService<IOptions<ConsulXenaDiscoveryServicesConfiguration>>();
@@ -33,22 +35,6 @@ public static class ConsulXenaDiscoveryServicesExtensions
             });
 
             return consulClient;
-        });
-
-        xenaDiscoveryServicesConfigurator.AddPostBuildAction(application =>
-        {
-            var hostApplicationLifetime = application.Services.GetRequiredService<IHostApplicationLifetime>();
-            var consulService = application.Services.GetRequiredService<IConsulXenaDiscoveryProvider>();
-
-            hostApplicationLifetime.ApplicationStarted.Register(async () =>
-            {
-                await consulService.InitializeConsulAsync();
-            });
-
-            hostApplicationLifetime.ApplicationStopping.Register(async () =>
-            {
-                await consulService.DeactivateAsync();
-            });
         });
 
         return xenaDiscoveryServicesConfigurator;

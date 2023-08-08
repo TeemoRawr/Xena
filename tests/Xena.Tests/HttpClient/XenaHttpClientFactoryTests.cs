@@ -22,7 +22,7 @@ public class XenaHttpClientFactoryTests
     private readonly IFixture _fixture = new Fixture();
 
     [Fact]
-    public async Task CreateHttpClient_ShouldCreateImplementedHttpClient()
+    public void CreateHttpClient_ShouldCreateImplementedHttpClient()
     {
         // arrange
         var service = new Service(
@@ -35,13 +35,13 @@ public class XenaHttpClientFactoryTests
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
         var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
-        xenaDiscoveryServicesServiceMock.Setup(p => p.GetServiceAsync(It.IsAny<string>()))
-            .ReturnsAsync(service);
+        xenaDiscoveryServicesServiceMock.Setup(p => p.GetService(It.IsAny<string>()))
+            .Returns(service);
 
         var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
         // act
-        var result = await sut.CreateHttpClient<ITestHttpClient>();
+        var result = sut.CreateHttpClient<ITestHttpClient>();
 
         // assert
         result.Should().BeAssignableTo<ITestHttpClient>();
@@ -49,7 +49,7 @@ public class XenaHttpClientFactoryTests
     }
     
     [Fact]
-    public async Task CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
+    public void CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
     {
         // arrange
         var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
@@ -59,7 +59,7 @@ public class XenaHttpClientFactoryTests
         var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
 
         // act and assert
-        await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
+        Assert.Throws<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
     }
 
     [Fact]
