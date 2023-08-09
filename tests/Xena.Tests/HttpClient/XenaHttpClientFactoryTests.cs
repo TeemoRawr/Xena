@@ -29,8 +29,7 @@ public class XenaHttpClientFactoryTests
             "test",
             _fixture.Create<string>(),
             "localhost",
-            _fixture.Create<int>(),
-            new List<string>());
+            _fixture.Create<int>());
 
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 

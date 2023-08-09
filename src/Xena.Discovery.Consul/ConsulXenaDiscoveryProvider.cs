@@ -32,28 +32,10 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
         _consulClient = consulClient;
     }
 
-    public Task AddServiceAsync(Service service)
-    {
-        _services.Add(service);
-        return Task.CompletedTask;
-    }
-
     public Service? GetService(string id)
     {
         var service = _services.SingleOrDefault(s => s.Id == id);
         return service;
-    }
-
-    public Task<Service?> GetServiceAsync(string id)
-    {
-        var service = _services.SingleOrDefault(s => s.Id == id);
-        return Task.FromResult(service);
-    }
-
-    public Task<IReadOnlyList<Service>> FindByTagAsync(string tag)
-    {
-        var services = _services.Where(s => s.Tags.Contains(tag)).ToList();
-        return Task.FromResult<IReadOnlyList<Service>>(services);
     }
 
     public async Task RefreshServicesAsync(CancellationToken stoppingToken)
@@ -68,17 +50,16 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
 
         var consulDiscoveryServicesConfiguration = _consulOptions.Value;
 
-        await _consulClient!.Agent.PassTTL(consulDiscoveryServicesConfiguration.Id, "Ok", stoppingToken);
+        await _consulClient.Agent.PassTTL(consulDiscoveryServicesConfiguration.Id, "Ok", stoppingToken);
 
-        var servicesResponse = await _consulClient!.Agent.Services(stoppingToken);
+        var servicesResponse = await _consulClient.Agent.Services(stoppingToken);
         var servicesFromConsul = servicesResponse.Response.Values;
         var services = servicesFromConsul
             .Select(s => new Service(
                 s.ID,
                 s.ID,
                 s.Address,
-                s.Port,
-                s.Tags.ToList()))
+                s.Port))
             .ToList();
 
         _services.Clear();
@@ -91,14 +72,14 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
     {
         var consulDiscoveryServicesConfiguration = _consulOptions.Value;
 
-        return _consulClient!.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
+        return _consulClient.Agent.ServiceDeregister(consulDiscoveryServicesConfiguration.Id);
     }
 
     public async Task InitializeAsync()
     {
         var preferredAddress = Policy.HandleResult<IServerAddressesFeature>(addresses => 
                 addresses is null || !addresses.Addresses.Any())
-            .WaitAndRetry(5, i => TimeSpan.FromSeconds(1))
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(1))
             .Execute(() => _serverAddressesFeature.Features.Get<IServerAddressesFeature>()!);
 
         var uri = new Uri(preferredAddress.Addresses.First());
