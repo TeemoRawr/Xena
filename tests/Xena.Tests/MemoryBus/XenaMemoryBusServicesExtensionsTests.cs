@@ -14,7 +14,7 @@ public class XenaMemoryBusServicesExtensionsTests
     {        
         // arrange
         var serviceCollection = new ServiceCollection();
-
+        
         var xenaWebApplicationBuilderMock = new Mock<IXenaWebApplicationBuilder>();
         xenaWebApplicationBuilderMock.SetupGet(p => p.Services).Returns(serviceCollection);
 

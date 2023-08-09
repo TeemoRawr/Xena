@@ -99,7 +99,7 @@ internal class ConsulXenaDiscoveryProvider : IConsulXenaDiscoveryProvider
         var preferredAddress = Policy.HandleResult<IServerAddressesFeature>(addresses => 
                 addresses is null || !addresses.Addresses.Any())
             .WaitAndRetry(5, i => TimeSpan.FromSeconds(1))
-            .Execute(() => _serverAddressesFeature.Features.Get<IServerAddressesFeature>());
+            .Execute(() => _serverAddressesFeature.Features.Get<IServerAddressesFeature>()!);
 
         var uri = new Uri(preferredAddress.Addresses.First());
         var consulDiscoveryServicesConfiguration = _consulOptions.Value;

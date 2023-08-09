@@ -3,13 +3,12 @@ using Xena.MemoryBus;
 using Xena.MemoryBus.Interfaces;
 
 namespace Xena.Tests.MemoryBus;
-
     
 public class XenaMemoryBusTests
 {
-    private Mock<IXenaQueryBus> _queryBusMock;
-    private Mock<IXenaCommandBus> _commandBusMock;
-    private Mock<IXenaEventBus> _eventBusMock;
+    private Mock<IXenaQueryBus> _queryBusMock = null!;
+    private Mock<IXenaCommandBus> _commandBusMock = null!;
+    private Mock<IXenaEventBus> _eventBusMock = null!;
 
     public class SimpleCommand : IXenaCommand
     {
