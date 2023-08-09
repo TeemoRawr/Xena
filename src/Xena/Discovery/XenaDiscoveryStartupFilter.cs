@@ -8,9 +8,12 @@ public class XenaDiscoveryStartupFilter : IStartupFilter
     {
         return builder =>
         {
-            var xenaDiscoveryInitializeService = builder.ApplicationServices.GetRequiredService<IXenaDiscoveryInitializeService>();
+            var xenaDiscoveryInitializeService = builder.ApplicationServices.GetService<IXenaDiscoveryInitializeService>();
 
-            xenaDiscoveryInitializeService.InitializeAsync().GetAwaiter().GetResult();
+            if (xenaDiscoveryInitializeService is not null)
+            {
+                xenaDiscoveryInitializeService.InitializeAsync().GetAwaiter().GetResult();
+            }
 
             next(builder);
         };
