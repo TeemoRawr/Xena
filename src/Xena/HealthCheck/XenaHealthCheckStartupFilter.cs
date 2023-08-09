@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Xena.HealthCheck;
 
+[ExcludeFromCodeCoverage]
 public class XenaHealthCheckStartupFilter : IStartupFilter
 {
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
