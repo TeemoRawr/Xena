@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Xena.HealthCheck;
+﻿using Xena.HealthCheck;
 using Xena.Startup.Interfaces;
 
 namespace Xena.Discovery.Configuration;

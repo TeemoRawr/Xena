@@ -3,7 +3,6 @@ using Xena.MemoryBus;
 using Xena.MemoryBus.Interfaces;
 
 namespace Xena.Tests.MemoryBus;
-
     
 public class XenaMemoryBusTests
 {
