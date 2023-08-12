@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using Refit;
 using Xena.Discovery.Interfaces;
+using Xena.HttpClient.Interceptors;
+using Xena.HttpClient.Interceptors.Interfaces;
 using Xena.HttpClient.Models;
 
 namespace Xena.HttpClient.Factories;
@@ -8,14 +10,20 @@ namespace Xena.HttpClient.Factories;
 internal class XenaHttpClientFactory
 {
     private readonly IXenaDiscoveryProvider _discoveryProvider;
+    private readonly IXenaHttpClientInterceptor[] _xenaHttpClientHandlers;
     private readonly ILogger<XenaHttpClientFactory> _logger;
 
-    public XenaHttpClientFactory(IXenaDiscoveryProvider? discoveryServicesService, ILogger<XenaHttpClientFactory> logger)
+    public XenaHttpClientFactory(
+        IXenaDiscoveryProvider? discoveryServicesService,
+        IEnumerable<IXenaHttpClientInterceptor> xenaHttpClientHandlers,
+        ILogger<XenaHttpClientFactory> logger)
     {
         _discoveryProvider = discoveryServicesService ?? 
-                                    throw new NullReferenceException($"Interface {nameof(IXenaDiscoveryProvider)} is not registered. " +
+                                    throw new NullReferenceException(
+                                        $"Interface {nameof(IXenaDiscoveryProvider)} is not registered. " +
                                                                     "Please add Discovery module to application");
         _logger = logger;
+        _xenaHttpClientHandlers = xenaHttpClientHandlers.ToArray();
     }
 
     public THttpClient CreateHttpClient<THttpClient>(
@@ -48,6 +56,7 @@ internal class XenaHttpClientFactory
         var xenaHttpClient = RestService.For<THttpClient>(serviceUrl, new RefitSettings
         {
             AuthorizationHeaderValueWithParamGetter = authorizationHeaderFunc,
+            HttpMessageHandlerFactory = () => new XenaHttpClientHandler(_xenaHttpClientHandlers),
         });
 
         return xenaHttpClient;
