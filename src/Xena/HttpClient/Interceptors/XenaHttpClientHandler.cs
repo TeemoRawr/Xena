@@ -1,12 +1,12 @@
-﻿using Xena.HttpClient.Handlers.Interfaces;
+﻿using Xena.HttpClient.Interceptors.Interfaces;
 
-namespace Xena.HttpClient.Handlers;
+namespace Xena.HttpClient.Interceptors;
 
 internal class XenaHttpClientHandler : HttpClientHandler
 {
-    private readonly IXenaHttpClientHandler[] _xenaHttpClientHandlers;
+    private readonly IXenaHttpClientInterceptor[] _xenaHttpClientHandlers;
 
-    public XenaHttpClientHandler(IXenaHttpClientHandler[] xenaHttpClientHandlers)
+    public XenaHttpClientHandler(IXenaHttpClientInterceptor[] xenaHttpClientHandlers)
     {
         _xenaHttpClientHandlers = xenaHttpClientHandlers;
     }
@@ -18,7 +18,7 @@ internal class XenaHttpClientHandler : HttpClientHandler
 
     private async Task<HttpResponseMessage> InvokeNext(int index, HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (_xenaHttpClientHandlers.Length > index)
+        if (_xenaHttpClientHandlers.Length - 1 < index)
         {
             return await base.SendAsync(request, cancellationToken);
         }
