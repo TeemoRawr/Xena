@@ -1,7 +1,9 @@
-﻿using Xena.HttpClient.Interceptors.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xena.HttpClient.Interceptors.Interfaces;
 
 namespace Xena.HttpClient.Interceptors;
 
+[ExcludeFromCodeCoverage]
 internal class XenaHttpClientHandler : HttpClientHandler
 {
     private readonly IXenaHttpClientInterceptor[] _xenaHttpClientHandlers;

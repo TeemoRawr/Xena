@@ -2,15 +2,12 @@
 using Moq;
 using Xena.MemoryBus;
 using Xena.MemoryBus.Interfaces;
+using Xena.Tests.MemoryBus.TestData;
 
 namespace Xena.Tests.MemoryBus;
 
 public class EventBusTests
-{
-    public class SimpleEvent : IXenaEvent
-    {
-    }
-    
+{   
     [Fact]
     public async Task Publish_ShouldInvokeAllEventHandlers()
     {
