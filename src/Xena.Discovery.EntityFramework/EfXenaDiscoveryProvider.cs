@@ -14,10 +14,10 @@ internal class EfXenaDiscoveryProvider : IXenaDiscoveryProvider
         _context = context;
     }
 
-    public async Task AddServiceAsync(Service service)
+    public Service? GetService(string id)
     {
-        _context.Services.Add(service);
-        await _context.SaveChangesAsync();
+        var service = _context.Services.SingleOrDefault(s => s.Id == id);
+        return service;
     }
 
     public async Task<Service?> GetServiceAsync(string id)
@@ -26,15 +26,8 @@ internal class EfXenaDiscoveryProvider : IXenaDiscoveryProvider
         return service;
     }
 
-    public async Task<IReadOnlyList<Service>> FindByTagAsync(string tag)
-    {
-        var services = await _context.Services.Where(p => p.Tags.Contains(tag)).ToListAsync();
-
-        return services;
-    }
-
     public Task RefreshServicesAsync(CancellationToken stoppingToken)
     {
         return Task.CompletedTask;
-    }
+    }    
 }

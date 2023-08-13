@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
+using System.Diagnostics.CodeAnalysis;
 using Xena.Startup.Interfaces;
 
 namespace Xena.Startup;
 
+[ExcludeFromCodeCoverage]
 public sealed class XenaWebApplication : IXenaWebApplication
 {
     private readonly WebApplication _webApplication;

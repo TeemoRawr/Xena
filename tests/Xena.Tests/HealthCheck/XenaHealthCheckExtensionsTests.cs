@@ -26,5 +26,9 @@ public class XenaHealthCheckExtensionsTests
         serviceCollectionMock.Verify(p => p.Add(It.Is<ServiceDescriptor>(
             p => p.ImplementationType != null
                 && p.ImplementationType.IsAssignableTo(typeof(HealthCheckService)))));
+        
+        serviceCollectionMock.Verify(p => p.Add(It.Is<ServiceDescriptor>(
+            p => p.ImplementationType != null
+                && p.ImplementationType.IsAssignableTo(typeof(XenaHealthCheckStartupFilter)))));
     }
 }

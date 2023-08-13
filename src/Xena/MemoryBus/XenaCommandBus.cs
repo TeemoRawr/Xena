@@ -2,7 +2,7 @@
 
 namespace Xena.MemoryBus;
 
-internal class XenaCommandBus
+internal class XenaCommandBus : IXenaCommandBus
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -15,7 +15,7 @@ internal class XenaCommandBus
     {
         var commandType = typeof(TCommand);
         var commandHandlerType = typeof(IXenaCommandHandler<>).MakeGenericType(commandType);
-        
+
         var commandHandler = (IXenaCommandHandler<TCommand>)_serviceProvider.GetRequiredService(commandHandlerType);
         await commandHandler.Handle(command);
     }

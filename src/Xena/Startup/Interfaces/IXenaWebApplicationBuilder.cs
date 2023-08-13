@@ -57,7 +57,7 @@ public interface IXenaWebApplicationBuilder
     IXenaWebApplicationBuilder AddPostBuildAsyncAction(Func<IXenaWebApplication, Task> action);
 
     /// <summary>
-    /// BuildAsync application
+    /// Build application asynchronously
     /// </summary>
     /// <returns>
     /// Returns <see cref="IXenaWebApplication"/>

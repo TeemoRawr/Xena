@@ -1,9 +1,8 @@
-﻿using System.Windows.Input;
-using Xena.MemoryBus.Interfaces;
+﻿using Xena.MemoryBus.Interfaces;
 
 namespace Xena.MemoryBus;
 
-internal class XenaQueryBus
+internal class XenaQueryBus : IXenaQueryBus
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -18,7 +17,7 @@ internal class XenaQueryBus
         var castedQueryType = queryType.GetInterfaces()
             .Where(p => p.IsGenericType)
             .Single(p => p.GetGenericTypeDefinition() == typeof(IXenaQuery<>));
-        
+
         var resultType = castedQueryType.GetGenericArguments().First();
         var queryHandlerType = typeof(IXenaQueryHandler<,>).MakeGenericType(queryType, resultType);
 

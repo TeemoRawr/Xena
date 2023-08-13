@@ -1,0 +1,14 @@
+﻿using Xena.HttpClient.Models;
+
+namespace Xena.HttpClient.Configuration;
+
+public interface IXenaHttpClientConfigurator
+{
+<<<<<<< Updated upstream
+    IXenaHttpClientConfigurator AddHttpClient<THttpClient>(
+        Func<HttpRequestMessage, Task<string>>? authorizationHeaderFunc = null) 
+        where THttpClient : IXenaHttpClient;
+=======
+    IXenaHttpClientConfigurator AddHttpClient<THttpClient>() where THttpClient : class, IXenaHttpClient;
+>>>>>>> Stashed changes
+}

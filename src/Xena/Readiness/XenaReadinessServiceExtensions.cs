@@ -5,6 +5,12 @@ namespace Xena.Readiness;
 
 public static class XenaReadinessServiceExtensions
 {
+    /// <summary>
+    /// Add required services for readiness feature
+    /// </summary>
+    /// <param name="webApplicationBuilder"></param>
+    /// <param name="configurationAction"></param>
+    /// <returns></returns>
     public static IXenaWebApplicationBuilder AddReadiness(
         this IXenaWebApplicationBuilder webApplicationBuilder,
         Action<IXenaReadinessConfigurator>? configurationAction = null)

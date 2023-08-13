@@ -6,6 +6,7 @@ using Refit;
 using Xena.Discovery.Interfaces;
 using Xena.Discovery.Models;
 using Xena.HttpClient.Factories;
+using Xena.HttpClient.Interceptors.Interfaces;
 using Xena.HttpClient.Models;
 
 namespace Xena.Tests.HttpClient;
@@ -22,26 +23,28 @@ public class XenaHttpClientFactoryTests
     private readonly IFixture _fixture = new Fixture();
 
     [Fact]
-    public async Task CreateHttpClient_ShouldCreateImplementedHttpClient()
+    public void CreateHttpClient_ShouldCreateImplementedHttpClient()
     {
         // arrange
         var service = new Service(
             "test",
             _fixture.Create<string>(),
             "localhost",
-            _fixture.Create<int>(),
-            new List<string>());
+            _fixture.Create<int>());
 
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
         var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
-        xenaDiscoveryServicesServiceMock.Setup(p => p.GetServiceAsync(It.IsAny<string>()))
-            .ReturnsAsync(service);
+        xenaDiscoveryServicesServiceMock.Setup(p => p.GetService(It.IsAny<string>()))
+            .Returns(service);
 
-        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
+        var sut = new XenaHttpClientFactory(
+            xenaDiscoveryServicesServiceMock.Object, 
+            new List<IXenaHttpClientInterceptor>(),
+            loggerMock.Object);
 
         // act
-        var result = await sut.CreateHttpClient<ITestHttpClient>();
+        var result = sut.CreateHttpClient<ITestHttpClient>();
 
         // assert
         result.Should().BeAssignableTo<ITestHttpClient>();
@@ -49,17 +52,20 @@ public class XenaHttpClientFactoryTests
     }
     
     [Fact]
-    public async Task CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
+    public void CreateHttpClient_WithoutAnyServices_ShouldThrowAnException()
     {
         // arrange
         var xenaDiscoveryServicesServiceMock = new Mock<IXenaDiscoveryProvider>();
 
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
-        var sut = new XenaHttpClientFactory(xenaDiscoveryServicesServiceMock.Object, loggerMock.Object);
+        var sut = new XenaHttpClientFactory(
+            xenaDiscoveryServicesServiceMock.Object,
+            new List<IXenaHttpClientInterceptor>(), 
+            loggerMock.Object);
 
         // act and assert
-        await Assert.ThrowsAsync<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
+        Assert.Throws<Exception>(() => sut.CreateHttpClient<ITestHttpClient>());
     }
 
     [Fact]
@@ -69,7 +75,10 @@ public class XenaHttpClientFactoryTests
         var loggerMock = new Mock<ILogger<XenaHttpClientFactory>>();
 
         // act and assert
-        var exception = Assert.Throws<NullReferenceException>(() => new XenaHttpClientFactory(null, loggerMock.Object));
+        var exception = Assert.Throws<NullReferenceException>(() => new XenaHttpClientFactory(
+            null,
+            new List<IXenaHttpClientInterceptor>(), 
+            loggerMock.Object));
         exception.Message.Should()
             .Be($"Interface {nameof(IXenaDiscoveryProvider)} is not registered. " +
                 "Please add Discovery module to application");
