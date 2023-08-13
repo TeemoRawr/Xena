@@ -1,7 +1,9 @@
-﻿using Xena.Startup.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xena.Startup.Interfaces;
 
 namespace Xena.Startup;
 
+[ExcludeFromCodeCoverage]
 internal sealed class XenaWebApplicationBuilder : IXenaWebApplicationBuilder
 {
     private readonly WebApplicationBuilder _webApplicationBuilder;
