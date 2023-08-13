@@ -7,10 +7,6 @@ namespace Xena.Tests.MemoryBus;
 
 public class CommandBusTests
 {
-    public class SimpleCommand : IXenaCommand
-    {
-    }
-
     [Fact]
     public async Task Publish_InvokeCommandHandler()
     {

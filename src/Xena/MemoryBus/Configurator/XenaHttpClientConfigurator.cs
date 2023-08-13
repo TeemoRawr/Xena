@@ -1,8 +1,10 @@
-﻿using Xena.MemoryBus.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xena.MemoryBus.Interfaces;
 using Xena.Startup.Interfaces;
 
 namespace Xena.MemoryBus.Configurator;
 
+[ExcludeFromCodeCoverage]
 internal class XenaMemoryBusConfigurator : IXenaMemoryBusConfigurator
 {
     private readonly IXenaWebApplicationBuilder _xenaWebApplicationBuilder;

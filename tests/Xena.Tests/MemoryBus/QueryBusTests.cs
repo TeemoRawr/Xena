@@ -4,15 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xena.MemoryBus;
 using Xena.MemoryBus.Interfaces;
+using Xena.Tests.MemoryBus.TestData;
 
 namespace Xena.Tests.MemoryBus;
 
 public class QueryBusTests
 {
-    public class SimpleQuery : IXenaQuery<int>
-    {
-    }
-
     [Fact]
     public async Task Query_InvokeQueryHandler()
     {
